@@ -1,0 +1,125 @@
+/**
+ * Schemas JSON para validação e documentação do endpoint /api/assistant
+ */
+
+// Schema de validação (sem example - usado pelo Fastify para validação)
+export const assistantRequestSchema = {
+  type: 'object',
+  required: ['description'],
+  properties: {
+    description: {
+      type: 'string',
+    },
+  },
+};
+
+// Schema de documentação (com example - usado pelo Swagger)
+export const assistantRequestSchemaDocs = {
+  type: 'object',
+  required: ['description'],
+  properties: {
+    description: {
+      type: 'string',
+      description: 'Texto com descrição do bug/melhoria/requisito',
+      example: 'Ao tentar fazer login no sistema, após inserir usuário e senha, aparece mensagem de erro "Sessão expirada" mesmo sendo a primeira tentativa.',
+    },
+  },
+};
+
+// Schema de validação
+export const assistantDataSchema = {
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+    },
+    description: {
+      type: 'string',
+    },
+    category: {
+      type: 'string',
+      enum: ['BUG', 'MELHORIA', 'REQUISITO'],
+    },
+    additionalInformation: {
+      type: 'string',
+    },
+  },
+  required: ['title', 'description', 'category'],
+};
+
+// Schema de documentação
+export const assistantDataSchemaDocs = {
+  type: 'object',
+  properties: {
+    title: {
+      type: 'string',
+      description: 'Título/resumo conciso do report',
+      example: 'Erro de "Sessão expirada" no login mesmo na primeira tentativa',
+    },
+    description: {
+      type: 'string',
+      description: 'Descrição completa do report, incluindo comportamento atual/esperado e passo a passo para reproduzir',
+      example: 'O sistema exibe mensagem de erro "Sessão expirada" durante o processo de login, mesmo sendo a primeira tentativa do usuário.\n\nComportamento esperado: O sistema deve autenticar o usuário e redirecionar para a página principal\n\nPassos para reproduzir:\n1. Acessar a tela de login\n2. Inserir usuário e senha válidos\n3. Clicar em "Entrar"\n4. Observar mensagem de erro "Sessão expirada"',
+    },
+    category: {
+      type: 'string',
+      enum: ['BUG', 'MELHORIA', 'REQUISITO'],
+      description: 'Categoria do Report',
+      example: 'BUG',
+    },
+    additionalInformation: {
+      type: 'string',
+      description: 'Informações adicionais do report',
+      example: 'Situação acontece em todos os navegadores testados (Chrome, Firefox, Safari)',
+    },
+  },
+  required: ['title', 'description', 'category'],
+};
+
+// Schema de validação
+export const assistantResponseSchema = {
+  type: 'object',
+  properties: {
+    success: {
+      type: 'boolean',
+    },
+    data: assistantDataSchema,
+    confidence: {
+      type: 'number',
+    },
+    processedIn: {
+      type: 'string',
+    },
+    error: {
+      type: 'string',
+    },
+  },
+  required: ['success'],
+};
+
+// Schema de documentação
+export const assistantResponseSchemaDocs = {
+  type: 'object',
+  properties: {
+    success: {
+      type: 'boolean',
+      example: true,
+    },
+    data: assistantDataSchemaDocs,
+    confidence: {
+      type: 'number',
+      description: 'Nível de confiança da resposta (0-1)',
+      example: 0.95,
+    },
+    processedIn: {
+      type: 'string',
+      description: 'Tempo de processamento',
+      example: '1234ms',
+    },
+    error: {
+      type: 'string',
+      example: 'Mensagem de erro (apenas em caso de falha)',
+    },
+  },
+  required: ['success'],
+};
