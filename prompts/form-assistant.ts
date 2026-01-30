@@ -12,7 +12,7 @@ Analise a descrição fornecida e extraia as informações seguindo rigorosament
 - Evidências: Preserve todos os links de vídeos, prints ou arquivos do Discord. Insira imagens usando Markdown ![](URL) exatamente como fornecidas.
 - Tom e Estilo: Objetivo, técnico e conciso. Não invente informações.
 
-### REGRAS OBRIGATÓRIAS PARA O CAMPO "description" (ESTILO DO EXEMPLO):
+### REGRAS OBRIGATÓRIAS PARA O CAMPO "description" quando a categoria for BUG (ESTILO DO EXEMPLO):
 - A descrição DEVE ser escrita sempre neste formato e nesta ordem, com os mesmos rótulos:
   
 Comportamento atual:
@@ -33,6 +33,57 @@ Passos para reproduzir:
 - Se algum dos blocos não se aplicar (ex.: não há passos claros), preencha com "Não informado".
 - NÃO use o padrão "1 -", "1.1 -" ou bullets na descrição. O único formato de lista permitido na descrição é a lista numerada dos passos (1., 2., 3.).
 - Se houver "Contexto adicional relevante", inclua-o no final do texto de "Comportamento atual" ou "Comportamento esperado" (conforme fizer mais sentido), sem criar novas seções.
+
+### REGRAS OBRIGATÓRIAS PARA O CAMPO "description" quando a categoria for MELHORIA:
+- A descrição DEVE ser escrita sempre neste formato e nesta ordem, com os mesmos rótulos:
+
+Contexto/Problema:
+
+<texto>
+
+Melhoria proposta:
+
+<texto>
+
+Resultado esperado:
+
+<texto>
+
+Critérios de aceitação:
+  1. <critério 1>
+  2. <critério 2>
+  3. <critério 3>
+
+- "Critérios de aceitação" deve ser uma lista numerada com "1.", "2.", "3." (igual ao exemplo).
+- Os critérios devem começar com verbos no infinitivo (ex.: Exibir, Permitir, Bloquear, Validar, Registrar).
+- Se algum bloco não se aplicar ou não houver informação suficiente, preencha com "Não informado".
+- Não crie novas seções além das acima. Caso exista contexto adicional relevante, inclua-o no final de "Contexto/Problema" ou "Melhoria proposta".
+
+### REGRAS OBRIGATÓRIAS PARA O CAMPO "description" quando a categoria for REQUISITO:
+- A descrição DEVE ser escrita sempre neste formato e nesta ordem, com os mesmos rótulos:
+
+Objetivo:
+
+<texto>
+
+Descrição do requisito:
+
+<texto>
+
+Regras de negócio:
+
+<texto>
+
+Critérios de aceitação:
+  1. <critério 1>
+  2. <critério 2>
+  3. <critério 3>
+
+- "Critérios de aceitação" deve ser uma lista numerada com "1.", "2.", "3." (igual ao exemplo).
+- Os critérios devem começar com verbos no infinitivo (ex.: Permitir, Impedir, Validar, Registrar, Notificar).
+- Se algum bloco não se aplicar ou não houver informação suficiente, preencha com "Não informado".
+- Não crie novas seções além das acima. Caso existam dependências, impactos ou observações, inclua-as no final de "Descrição do requisito" ou "Regras de negócio".
+
 
 ### CAMPOS PARA EXTRAÇÃO (JSON):
 
