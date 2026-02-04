@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
+import multipart from '@fastify/multipart';
 import dotenv from 'dotenv';
 import { AIService } from './services/ai-service.js';
 import { indexRoutes } from './routes/index.js';
@@ -22,6 +23,13 @@ async function buildServer() {
   const fastify = Fastify({
     logger: {
       level: 'info',
+    },
+  });
+
+  // Registrar multipart para upload de arquivos
+  await fastify.register(multipart, {
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB máximo
     },
   });
 

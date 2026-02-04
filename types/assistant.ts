@@ -3,7 +3,9 @@
  */
 
 export interface AssistantRequest {
-  description: string;
+  description?: string;
+  audio?: Buffer; // Buffer do arquivo de áudio
+  audioMimeType?: string; // Tipo MIME do áudio (ex: 'audio/mpeg', 'audio/wav')
 }
 
 export interface AssistantData {

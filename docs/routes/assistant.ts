@@ -8,7 +8,7 @@ import { errorResponseSchema } from '../schemas/common.js';
 export const assistantRouteSchema = {
   tags: ['assistant'],
   summary: 'Processar relatório com IA',
-  description: 'Processa uma descrição de bug/melhoria/requisito e retorna JSON estruturado para preenchimento automático de formulários',
+  description: 'Processa uma descrição (texto ou áudio) de bug/melhoria/requisito e retorna JSON estruturado para preenchimento automático de formulários. Aceita multipart/form-data (com campo "description" e/ou arquivo "audio") ou application/json (apenas "description").',
   body: assistantRequestSchemaDocs,
   response: {
     200: {

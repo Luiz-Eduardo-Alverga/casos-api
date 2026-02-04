@@ -39,19 +39,56 @@ export class AIService {
     const startTime = Date.now();
 
     try {
-      if (!request.description || request.description.trim().length === 0) {
+      // Validar que pelo menos description ou audio foi fornecido
+      const hasDescription = request.description && request.description.trim().length > 0;
+      const hasAudio = request.audio && request.audio.length > 0;
+
+      if (!hasDescription && !hasAudio) {
         return {
           success: false,
-          error: 'A descrição é obrigatória',
+          error: 'É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio',
         };
       }
 
-      // Construir prompt completo
-      const fullPrompt = `${FORM_ASSISTANT_PROMPT}\n\nDescrição fornecida:\n${request.description}\n\nRetorne APENAS o JSON válido:`;
+      // Construir partes do conteúdo para o Gemini
+      const parts: any[] = [];
+
+      // Adicionar prompt de instrução
+      parts.push({ text: FORM_ASSISTANT_PROMPT });
+
+      // Se houver descrição em texto, adicionar
+      if (hasDescription) {
+        parts.push({ text: `\n\nDescrição fornecida:\n${request.description}` });
+      }
+
+      // Se houver áudio, adicionar
+      if (hasAudio && request.audioMimeType) {
+        // Converter buffer para base64
+        const audioBase64 = request.audio.toString('base64');
+        
+        // Determinar o tipo de arquivo baseado no MIME type
+        let fileData: any = {
+          inlineData: {
+            data: audioBase64,
+            mimeType: request.audioMimeType,
+          },
+        };
+
+        parts.push(fileData);
+        
+        // Adicionar instrução para processar o áudio
+        if (!hasDescription) {
+          parts.push({ text: '\n\nPor favor, transcreva o áudio fornecido e processe as informações conforme o prompt acima.' });
+        } else {
+          parts.push({ text: '\n\nConsidere também o áudio fornecido para complementar a descrição em texto.' });
+        }
+      }
+
+      parts.push({ text: '\n\nRetorne APENAS o JSON válido:' });
 
       // Chamar Gemini com JSON mode
       const result = await this.model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+        contents: [{ role: 'user', parts }],
         generationConfig: {
           ...this.generationConfig,
           responseMimeType: 'application/json',

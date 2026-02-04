@@ -5,23 +5,31 @@
 // Schema de validação (sem example - usado pelo Fastify para validação)
 export const assistantRequestSchema = {
   type: 'object',
-  required: ['description'],
   properties: {
     description: {
       type: 'string',
     },
+    audio: {
+      type: 'string',
+      format: 'binary', // Para Swagger UI mostrar upload de arquivo
+    },
   },
+  // Não requer description obrigatória, mas pelo menos um deve ser fornecido
 };
 
 // Schema de documentação (com example - usado pelo Swagger)
 export const assistantRequestSchemaDocs = {
   type: 'object',
-  required: ['description'],
   properties: {
     description: {
       type: 'string',
-      description: 'Texto com descrição do bug/melhoria/requisito',
+      description: 'Texto com descrição do bug/melhoria/requisito (opcional se audio for fornecido)',
       example: 'Ao tentar fazer login no sistema, após inserir usuário e senha, aparece mensagem de erro "Sessão expirada" mesmo sendo a primeira tentativa.',
+    },
+    audio: {
+      type: 'string',
+      format: 'binary',
+      description: 'Arquivo de áudio com descrição do bug/melhoria/requisito (opcional se description for fornecido). Formatos suportados: MP3, WAV, M4A, etc.',
     },
   },
 };
