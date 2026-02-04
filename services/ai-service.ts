@@ -64,7 +64,7 @@ export class AIService {
       // Se houver áudio, adicionar
       if (hasAudio && request.audioMimeType) {
         // Converter buffer para base64
-        const audioBase64 = request.audio.toString('base64');
+        const audioBase64 = request.audio?.toString('base64') || '';
         
         // Determinar o tipo de arquivo baseado no MIME type
         let fileData: any = {

@@ -107,7 +107,7 @@ async function buildServer() {
     fastify.log.error(error, 'Erro não tratado');
     reply.code(500).send({
       success: false,
-      error: error.message || 'Erro interno do servidor',
+      error: (error as Error).message || 'Erro interno do servidor',
     });
   });
 
