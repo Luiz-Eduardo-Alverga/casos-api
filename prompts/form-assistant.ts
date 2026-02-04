@@ -97,6 +97,7 @@ Critérios de aceitação:
 - Retorne APENAS um JSON válido, sem texto adicional antes ou depois.
 - Se informações essenciais faltarem e não puderem ser inferidas com confiança, use "Não informado".
 - Não invente Produto, Caminho em tela, passos, comportamento esperado ou qualquer detalhe que não esteja explícito.
+- Caso não possua informações adicionais, retorne apenas uma string vazia no campo "additionalInformation".
 
 Formato JSON esperado:
 {

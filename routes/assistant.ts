@@ -100,7 +100,16 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         });
 
         if (!result.success) {
-          return reply.code(400).send(result);
+          // Retornar 422 (Unprocessable Entity) para conteúdo inválido/insuficiente
+          // ou 400 (Bad Request) para outros erros de validação
+          const statusCode = result.error?.includes('insuficiente') || 
+                            result.error?.includes('muito curto') || 
+                            result.error?.includes('não contém informações') ||
+                            result.error?.includes('não foi possível identificar')
+            ? 422 
+            : 400;
+          
+          return reply.code(statusCode).send(result);
         }
 
         return reply.code(200).send(result);
