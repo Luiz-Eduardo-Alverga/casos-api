@@ -1,0 +1,1412 @@
+[
+    {
+        "id": "240",
+        "nome_projeto": "(Desativado) Softshop.NET",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "143",
+        "nome_projeto": "(Desativado)Atualizador de Objetos Restaurante",
+        "setor": "PED"
+    },
+    {
+        "id": "171",
+        "nome_projeto": "(Descontinuado) Softcom Dashboard",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "223",
+        "nome_projeto": "(Legado) Atualizador de Objetos",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "30",
+        "nome_projeto": "(Legado) SMobile",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "232",
+        "nome_projeto": "ABCFARMA - DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "278",
+        "nome_projeto": "Agendar.ai",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "228",
+        "nome_projeto": "AiQFome API",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "178",
+        "nome_projeto": "Ajuda .Net - DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "221",
+        "nome_projeto": "Ajuda .Net - WEB",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "310",
+        "nome_projeto": "Anota.AI API",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "288",
+        "nome_projeto": "API Auditoria (softcom audits)",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "216",
+        "nome_projeto": "API Entregas",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "236",
+        "nome_projeto": "API Integraçao Bancaria",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "303",
+        "nome_projeto": "API Mesas",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "199",
+        "nome_projeto": "Api Nfse",
+        "setor": "PED"
+    },
+    {
+        "id": "234",
+        "nome_projeto": "API Placas - DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "269",
+        "nome_projeto": "API Registro",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "254",
+        "nome_projeto": "API SOFTCOM",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "309",
+        "nome_projeto": "API XMLs",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "298",
+        "nome_projeto": "Aplicativos",
+        "setor": null
+    },
+    {
+        "id": "73",
+        "nome_projeto": "AREA CLIENTE",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "91",
+        "nome_projeto": "Area Cliente Softcom",
+        "setor": "SQUAD WEB"
+    },
+    {
+        "id": "148",
+        "nome_projeto": "Area Contador",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "93",
+        "nome_projeto": "Area Partner",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "129",
+        "nome_projeto": "ASSISTÊNCIA TÉCNICA",
+        "setor": "MUDANCAS"
+    },
+    {
+        "id": "323",
+        "nome_projeto": "Assistente AI",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "187",
+        "nome_projeto": "Assistente Virtual Drica (LAB)",
+        "setor": "LABS"
+    },
+    {
+        "id": "275",
+        "nome_projeto": "Atendente BOT (Tá no Menu e Catálogo Digital)",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "97",
+        "nome_projeto": "ATUAL ADM CONDOMINIOS",
+        "setor": null
+    },
+    {
+        "id": "59",
+        "nome_projeto": "Atualizador de Objetos",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "212",
+        "nome_projeto": "Atualizador de Versoes SOFTSHOP",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "36",
+        "nome_projeto": "Auto Escola",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "318",
+        "nome_projeto": "Automação Bot",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "284",
+        "nome_projeto": "Automacao de Testes - BackOffice",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "272",
+        "nome_projeto": "Automacao de Testes - Cloud",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "290",
+        "nome_projeto": "Automacao de Testes - XP",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "317",
+        "nome_projeto": "Automações Innovation",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "305",
+        "nome_projeto": "AutoSetup",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "158",
+        "nome_projeto": "Azure UpdateManager",
+        "setor": null
+    },
+    {
+        "id": "157",
+        "nome_projeto": "AzureXmlBackup",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "195",
+        "nome_projeto": "BackupCloud",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "226",
+        "nome_projeto": "Barra de Titulo Softcom",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "188",
+        "nome_projeto": "Bigdata (LAB)",
+        "setor": "LABS"
+    },
+    {
+        "id": "302",
+        "nome_projeto": "Blip",
+        "setor": null
+    },
+    {
+        "id": "296",
+        "nome_projeto": "Cadastro Rápido API",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "273",
+        "nome_projeto": "Catálogo Digital Online (Legado)",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "325",
+        "nome_projeto": "Catálogo Digital V2",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "225",
+        "nome_projeto": "CertificadoNuvemManager",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "179",
+        "nome_projeto": "Checar",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "141",
+        "nome_projeto": "CLIENTE +SOFTCOM  APP",
+        "setor": "PED"
+    },
+    {
+        "id": "191",
+        "nome_projeto": "Clube da Hora (LAB)",
+        "setor": "LABS"
+    },
+    {
+        "id": "57",
+        "nome_projeto": "Coletor de Dados",
+        "setor": "PED"
+    },
+    {
+        "id": "326",
+        "nome_projeto": "Collector (Novo)",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "120",
+        "nome_projeto": "Collector Legado",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "60",
+        "nome_projeto": "Comanda Eletronica - Android",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "75",
+        "nome_projeto": "Comanda Eletronica - Phonegap",
+        "setor": "PED"
+    },
+    {
+        "id": "55",
+        "nome_projeto": "Concursos",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "151",
+        "nome_projeto": "Consulta CNPJ",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "88",
+        "nome_projeto": "Dashboard Web",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "304",
+        "nome_projeto": "Drica IA",
+        "setor": null
+    },
+    {
+        "id": "277",
+        "nome_projeto": "Drica Whats",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "109",
+        "nome_projeto": "ECommerce API",
+        "setor": "PED"
+    },
+    {
+        "id": "297",
+        "nome_projeto": "E-Docs",
+        "setor": null
+    },
+    {
+        "id": "108",
+        "nome_projeto": "Emissor CT-e",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "61",
+        "nome_projeto": "Emissor CT-e (Versão descontinuada)",
+        "setor": "PED"
+    },
+    {
+        "id": "106",
+        "nome_projeto": "Emissor MDF-e",
+        "setor": "PED"
+    },
+    {
+        "id": "58",
+        "nome_projeto": "Emissor NF-e",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "45",
+        "nome_projeto": "Emissor NFS-e",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "78",
+        "nome_projeto": "ENGPRED",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "211",
+        "nome_projeto": "Etiquetas Impressão Desktop",
+        "setor": null
+    },
+    {
+        "id": "82",
+        "nome_projeto": "FABRICA ANALYTICS",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "250",
+        "nome_projeto": "FAÇA COM A DRICA",
+        "setor": "SQUAD AUTOMACAO"
+    },
+    {
+        "id": "203",
+        "nome_projeto": "FEITOSA & NOVAIS",
+        "setor": null
+    },
+    {
+        "id": "134",
+        "nome_projeto": "FIDELIZAÇÃO DE CLIENTES",
+        "setor": "PED"
+    },
+    {
+        "id": "324",
+        "nome_projeto": "Fluxo Cobrança DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "249",
+        "nome_projeto": "Força de Vendas DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "213",
+        "nome_projeto": "Gerador Etiquetas Softcomshop",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "156",
+        "nome_projeto": "Gerenciador de Atualização Automática",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "104",
+        "nome_projeto": "GNRE",
+        "setor": "PED"
+    },
+    {
+        "id": "283",
+        "nome_projeto": "Health-Check",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "46",
+        "nome_projeto": "Help Data",
+        "setor": "PED"
+    },
+    {
+        "id": "100",
+        "nome_projeto": "HelpTools",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "186",
+        "nome_projeto": "Helptools Backend",
+        "setor": "PED"
+    },
+    {
+        "id": "130",
+        "nome_projeto": "HIGIENIZADOR DE DADOS",
+        "setor": "MUDANCAS"
+    },
+    {
+        "id": "125",
+        "nome_projeto": "IB - INTEGRACAO BANCARIA",
+        "setor": "MUDANCAS"
+    },
+    {
+        "id": "152",
+        "nome_projeto": "IFood API",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "99",
+        "nome_projeto": "Importador de Dados",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "259",
+        "nome_projeto": "Importador de Dados Softcomshop",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "159",
+        "nome_projeto": "Importador de Terceiros",
+        "setor": "PED"
+    },
+    {
+        "id": "76",
+        "nome_projeto": "Importador XML",
+        "setor": "PED"
+    },
+    {
+        "id": "19",
+        "nome_projeto": "Inorpel",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "71",
+        "nome_projeto": "Inovaçoes",
+        "setor": "PED"
+    },
+    {
+        "id": "64",
+        "nome_projeto": "Instalador Softcom",
+        "setor": "PED"
+    },
+    {
+        "id": "113",
+        "nome_projeto": "INTEGRAÇÃO BANCARIA (WEB)",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "261",
+        "nome_projeto": "Integracao Bancaria DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "244",
+        "nome_projeto": "Integração Cadastro Rápido DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "271",
+        "nome_projeto": "Integração DDA Softcom DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "217",
+        "nome_projeto": "Integração Marketplace API",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "227",
+        "nome_projeto": "Integração Marketplace DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "237",
+        "nome_projeto": "Integracao Scanntech DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "255",
+        "nome_projeto": "Integração Softcomship DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "239",
+        "nome_projeto": "Integraçao SoftDelivery DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "204",
+        "nome_projeto": "Integraçao Vitrines Virtuais",
+        "setor": "PED"
+    },
+    {
+        "id": "122",
+        "nome_projeto": "Integrador Softshop x Softcomshop",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "20",
+        "nome_projeto": "Kima Segurança",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "194",
+        "nome_projeto": "LAB Softcom",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "229",
+        "nome_projeto": "LandingPage Softcomshop",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "149",
+        "nome_projeto": "Liberador SOFTSHOP",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "79",
+        "nome_projeto": "LIFECAR",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "21",
+        "nome_projeto": "Mac Formaturas",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "190",
+        "nome_projeto": "MADEIREIRA",
+        "setor": null
+    },
+    {
+        "id": "52",
+        "nome_projeto": "Marinha-Multas-Mobile",
+        "setor": "PED"
+    },
+    {
+        "id": "53",
+        "nome_projeto": "Marinha-Multas-Web",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "281",
+        "nome_projeto": "Marketplace [OLD]",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "289",
+        "nome_projeto": "MeiUP",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "311",
+        "nome_projeto": "Meu Carrinho API",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "295",
+        "nome_projeto": "Meu Carrinho App (Loja Online)",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "202",
+        "nome_projeto": "Meu Carrinho Portal Web",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "327",
+        "nome_projeto": "Meu Fiscal",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "183",
+        "nome_projeto": "Meu Softcom Backend",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "181",
+        "nome_projeto": "Meu Softcom Mobile",
+        "setor": "PED"
+    },
+    {
+        "id": "184",
+        "nome_projeto": "Meu Softcom Web",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "189",
+        "nome_projeto": "Módulo de Encomenda",
+        "setor": "MUDANCAS"
+    },
+    {
+        "id": "231",
+        "nome_projeto": "Módulo de Validação",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "22",
+        "nome_projeto": "Módulo e-Pós",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "116",
+        "nome_projeto": "Mudancas",
+        "setor": null
+    },
+    {
+        "id": "87",
+        "nome_projeto": "NFCe Gerenciador",
+        "setor": "PED"
+    },
+    {
+        "id": "86",
+        "nome_projeto": "NFCe Interface",
+        "setor": "PED"
+    },
+    {
+        "id": "312",
+        "nome_projeto": "NFCom DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "174",
+        "nome_projeto": "NFeForAccess",
+        "setor": "PED"
+    },
+    {
+        "id": "136",
+        "nome_projeto": "NFeManager",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "154",
+        "nome_projeto": "NFeManagerAndroid",
+        "setor": null
+    },
+    {
+        "id": "95",
+        "nome_projeto": "Nuvem Fiscal",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "257",
+        "nome_projeto": "OS SMART",
+        "setor": "SQUAD AUTOMACAO"
+    },
+    {
+        "id": "105",
+        "nome_projeto": "Papa Fila",
+        "setor": "PED"
+    },
+    {
+        "id": "128",
+        "nome_projeto": "Parametrizador Autonomo (Softshop/Softcomshop)",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "252",
+        "nome_projeto": "Parametrizador Segmentos - SOFTSHOP",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "233",
+        "nome_projeto": "Passaporte Softcom",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "193",
+        "nome_projeto": "Pay (LAB)",
+        "setor": "LAB"
+    },
+    {
+        "id": "153",
+        "nome_projeto": "PaymentManager",
+        "setor": "PED"
+    },
+    {
+        "id": "38",
+        "nome_projeto": "PDV - Softshop Caixa",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "123",
+        "nome_projeto": "PDV SMART",
+        "setor": "PED"
+    },
+    {
+        "id": "214",
+        "nome_projeto": "PEDE.AI API",
+        "setor": "PED"
+    },
+    {
+        "id": "131",
+        "nome_projeto": "PESQUISA PREÇO",
+        "setor": null
+    },
+    {
+        "id": "256",
+        "nome_projeto": "PIX MEU BANCO",
+        "setor": "SQUAD AUTOMACAO"
+    },
+    {
+        "id": "89",
+        "nome_projeto": "PLANO DE TESTE WEB",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "115",
+        "nome_projeto": "POOBLICAO",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "172",
+        "nome_projeto": "Portal de Serviços",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "111",
+        "nome_projeto": "POYNT",
+        "setor": "PED"
+    },
+    {
+        "id": "110",
+        "nome_projeto": "PREVMED",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "54",
+        "nome_projeto": "Prime",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "119",
+        "nome_projeto": "Print Manager Android",
+        "setor": "PED"
+    },
+    {
+        "id": "150",
+        "nome_projeto": "PrintManagerWindows",
+        "setor": "PED"
+    },
+    {
+        "id": "47",
+        "nome_projeto": "Proacad",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "23",
+        "nome_projeto": "Proacad - Acadepol",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "24",
+        "nome_projeto": "Proacad - Cursos",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "25",
+        "nome_projeto": "Proacad - Escola",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "44",
+        "nome_projeto": "Proacad - Faculdades",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "26",
+        "nome_projeto": "Proacad - Isoladas",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "67",
+        "nome_projeto": "Proacad Novo - Acadepol",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "308",
+        "nome_projeto": "PRODUTO A DEFINIR",
+        "setor": "SUPERVISAO PRODUTOS"
+    },
+    {
+        "id": "27",
+        "nome_projeto": "Proeng",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "72",
+        "nome_projeto": "PROJETO CERTIFICADO HTTPS",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "270",
+        "nome_projeto": "Projetos Automacao",
+        "setor": "SQUAD AUTOMACAO"
+    },
+    {
+        "id": "265",
+        "nome_projeto": "Projetos BackOffice",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "266",
+        "nome_projeto": "Projetos Cloud",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "307",
+        "nome_projeto": "Projetos XP",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "28",
+        "nome_projeto": "Proserv",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "274",
+        "nome_projeto": "Quero Bônus - WhatsApp Bot",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "230",
+        "nome_projeto": "Quero Bonus API",
+        "setor": "SQUAD OMNICHANNEL BANKING"
+    },
+    {
+        "id": "238",
+        "nome_projeto": "Quero Bônus Club - Landing Page",
+        "setor": null
+    },
+    {
+        "id": "267",
+        "nome_projeto": "Quero Delivery API",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "207",
+        "nome_projeto": "Recuperador Dados Fiscais SOFTSHOP",
+        "setor": "MUDANCAS"
+    },
+    {
+        "id": "80",
+        "nome_projeto": "REDE COMPRAS",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "314",
+        "nome_projeto": "Reference-Data API",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "135",
+        "nome_projeto": "Remote Config",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "40",
+        "nome_projeto": "Representacao",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "286",
+        "nome_projeto": "Rotinas Squad BackOffice",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "287",
+        "nome_projeto": "Rotinas Squad Cloud",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "313",
+        "nome_projeto": "Rotinas Squad Shield",
+        "setor": "SQUAD SHIELD"
+    },
+    {
+        "id": "117",
+        "nome_projeto": "SAT/MFE API",
+        "setor": "PED"
+    },
+    {
+        "id": "107",
+        "nome_projeto": "SEF II",
+        "setor": "PED"
+    },
+    {
+        "id": "127",
+        "nome_projeto": "SELFCHECKOUT",
+        "setor": "PED"
+    },
+    {
+        "id": "146",
+        "nome_projeto": "Selfhost Api",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "98",
+        "nome_projeto": "Serviço Dashboard",
+        "setor": "PED"
+    },
+    {
+        "id": "81",
+        "nome_projeto": "Serviço PDV",
+        "setor": "PED"
+    },
+    {
+        "id": "85",
+        "nome_projeto": "SERVIDOR",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "74",
+        "nome_projeto": "SetupComanda",
+        "setor": "PED"
+    },
+    {
+        "id": "63",
+        "nome_projeto": "SetupDLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "103",
+        "nome_projeto": "SetupQRCode",
+        "setor": null
+    },
+    {
+        "id": "84",
+        "nome_projeto": "SGP - SECRETARIA DE SEGURANCA",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "29",
+        "nome_projeto": "SISRM-2",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "205",
+        "nome_projeto": "Smart (Softcom Smart)",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "301",
+        "nome_projeto": "Smobile",
+        "setor": null
+    },
+    {
+        "id": "142",
+        "nome_projeto": "SMOBILE CHECKING",
+        "setor": "SQUAD OMNICHANNEL BANKING"
+    },
+    {
+        "id": "132",
+        "nome_projeto": "SMOBILE INSTANT",
+        "setor": "PED"
+    },
+    {
+        "id": "222",
+        "nome_projeto": "SNGPC - DLL",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "235",
+        "nome_projeto": "Social Authentication",
+        "setor": "SQUAD OMNICHANNEL BANKING"
+    },
+    {
+        "id": "31",
+        "nome_projeto": "Softclin",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "66",
+        "nome_projeto": "SOFTCLIN ASSEMBLEIA",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "68",
+        "nome_projeto": "SOFTCOB VLM",
+        "setor": "PED"
+    },
+    {
+        "id": "299",
+        "nome_projeto": "SOFTCOM",
+        "setor": null
+    },
+    {
+        "id": "62",
+        "nome_projeto": "Softcom (Agenda)",
+        "setor": "SQUAD AGENDA"
+    },
+    {
+        "id": "138",
+        "nome_projeto": "Softcom (Bematech)",
+        "setor": "QUALIDADE"
+    },
+    {
+        "id": "208",
+        "nome_projeto": "Softcom (Infra)",
+        "setor": "INFRA"
+    },
+    {
+        "id": "139",
+        "nome_projeto": "Softcom (Pesquisa Universidade)",
+        "setor": "QUALIDADE"
+    },
+    {
+        "id": "144",
+        "nome_projeto": "Softcom (Processos)",
+        "setor": "QUALIDADE"
+    },
+    {
+        "id": "140",
+        "nome_projeto": "Softcom (Qualidade/Teste)",
+        "setor": "QUALIDADE"
+    },
+    {
+        "id": "180",
+        "nome_projeto": "Softcom Consulta Tabelas",
+        "setor": "PED"
+    },
+    {
+        "id": "177",
+        "nome_projeto": "Softcom ConsultaUrlNfce",
+        "setor": null
+    },
+    {
+        "id": "200",
+        "nome_projeto": "Softcom Delivery",
+        "setor": "PERSONALIZADO"
+    },
+    {
+        "id": "196",
+        "nome_projeto": "Softcom Downloader",
+        "setor": "PED"
+    },
+    {
+        "id": "220",
+        "nome_projeto": "Softcom Mensagens Ajuda",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "251",
+        "nome_projeto": "Softcom Messenger DLL (Venda Mais)",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "175",
+        "nome_projeto": "Softcom Modulos",
+        "setor": "PED"
+    },
+    {
+        "id": "160",
+        "nome_projeto": "Softcom Notificações",
+        "setor": "PED"
+    },
+    {
+        "id": "285",
+        "nome_projeto": "Softcom Notification",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "215",
+        "nome_projeto": "Softcom Pay Api",
+        "setor": "PED"
+    },
+    {
+        "id": "182",
+        "nome_projeto": "Softcom PeD",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "197",
+        "nome_projeto": "Softcom Restful Api",
+        "setor": "PED"
+    },
+    {
+        "id": "118",
+        "nome_projeto": "SOFTCOM SMART LEGADO",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "176",
+        "nome_projeto": "Softcom Update Manager",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "315",
+        "nome_projeto": "Softcom Vision",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "245",
+        "nome_projeto": "Softcom WEB",
+        "setor": "SQUAD WEB"
+    },
+    {
+        "id": "101",
+        "nome_projeto": "SOFTCOM+",
+        "setor": "PED"
+    },
+    {
+        "id": "319",
+        "nome_projeto": "SoftcomFlow-API",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "322",
+        "nome_projeto": "SoftcomFlow-Bot",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "321",
+        "nome_projeto": "SoftcomFlow-Desktop",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "320",
+        "nome_projeto": "SoftcomFlow-Web",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "276",
+        "nome_projeto": "SoftcomPay - API",
+        "setor": "SQUAD OMNICHANNEL BANKING"
+    },
+    {
+        "id": "218",
+        "nome_projeto": "SoftcomPay Portal",
+        "setor": "SQUAD OMNICHANNEL BANKING"
+    },
+    {
+        "id": "121",
+        "nome_projeto": "SOFTCOMSEND",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "224",
+        "nome_projeto": "SoftcomShip API",
+        "setor": "SQUAD OMNICHANNEL BANKING"
+    },
+    {
+        "id": "92",
+        "nome_projeto": "SOFTCOMSHOP",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "282",
+        "nome_projeto": "SOFTCOMSHOP API-IA",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "241",
+        "nome_projeto": "Softconnect",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "32",
+        "nome_projeto": "Softcred",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "33",
+        "nome_projeto": "Softcred - BR CRED",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "42",
+        "nome_projeto": "Softloc",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "34",
+        "nome_projeto": "Softmov",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "90",
+        "nome_projeto": "SOFTMOV - GEO URBANA",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "94",
+        "nome_projeto": "SOFTMOV - GESTÃO DE MATERIAIS",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "300",
+        "nome_projeto": "Softmov2",
+        "setor": null
+    },
+    {
+        "id": "37",
+        "nome_projeto": "SOFTSHOP",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "41",
+        "nome_projeto": "Softshop - Auditoria Alimenticia",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "126",
+        "nome_projeto": "SOFTSHOP - FIDELIZAÇÃO",
+        "setor": "MUDANCAS"
+    },
+    {
+        "id": "279",
+        "nome_projeto": "SOFTSHOP Dashboard",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "316",
+        "nome_projeto": "SOFTSHOP ERP",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "248",
+        "nome_projeto": "SOFTSHOP FIX",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "77",
+        "nome_projeto": "Softshop Industria",
+        "setor": "PED"
+    },
+    {
+        "id": "264",
+        "nome_projeto": "SOFTSHOP Locacao",
+        "setor": "SQUAD AUTOMACAO"
+    },
+    {
+        "id": "219",
+        "nome_projeto": "SOFTSHOP Modulos",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "263",
+        "nome_projeto": "SOFTSHOP Modulos (Automacao)",
+        "setor": "SQUAD AUTOMACAO"
+    },
+    {
+        "id": "145",
+        "nome_projeto": "Softshop TEF",
+        "setor": "PED"
+    },
+    {
+        "id": "35",
+        "nome_projeto": "Softshop Viação São Jorge",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "137",
+        "nome_projeto": "SOFTSHOPTEF",
+        "setor": "PED"
+    },
+    {
+        "id": "70",
+        "nome_projeto": "SoftSync",
+        "setor": "PED"
+    },
+    {
+        "id": "69",
+        "nome_projeto": "SoftSync Filiais",
+        "setor": "PED"
+    },
+    {
+        "id": "112",
+        "nome_projeto": "SPED .NET",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "39",
+        "nome_projeto": "SPED Fiscal - Pis Cofins",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "65",
+        "nome_projeto": "SQL Convert",
+        "setor": "PED"
+    },
+    {
+        "id": "294",
+        "nome_projeto": "Squad NoCode",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "280",
+        "nome_projeto": "Squad XP",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "96",
+        "nome_projeto": "SUPRA",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "242",
+        "nome_projeto": "Tá na Mão",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "243",
+        "nome_projeto": "Tá no Menu (Legado)",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "201",
+        "nome_projeto": "Teste Softcomshop",
+        "setor": "QUALIDADE"
+    },
+    {
+        "id": "258",
+        "nome_projeto": "UaiRango API",
+        "setor": "SQUAD BACKOFFICE"
+    },
+    {
+        "id": "210",
+        "nome_projeto": "UberEats API",
+        "setor": "PED"
+    },
+    {
+        "id": "155",
+        "nome_projeto": "Valida Infra",
+        "setor": "PED"
+    },
+    {
+        "id": "247",
+        "nome_projeto": "Venda Mais CRM (Portal Web)",
+        "setor": "SQUAD CLOUD"
+    },
+    {
+        "id": "253",
+        "nome_projeto": "Vendas 360 (Mobile)",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "293",
+        "nome_projeto": "Vendas 360 API",
+        "setor": "SQUAD NOCODE"
+    },
+    {
+        "id": "292",
+        "nome_projeto": "Vendas 360 Ecommerce B2B",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "291",
+        "nome_projeto": "Vendas 360 Portal Web",
+        "setor": "SQUAD XP"
+    },
+    {
+        "id": "192",
+        "nome_projeto": "Vertical Serviços (LAB)",
+        "setor": "LAB"
+    },
+    {
+        "id": "147",
+        "nome_projeto": "VideoAjuda",
+        "setor": "PED"
+    },
+    {
+        "id": "124",
+        "nome_projeto": "VITRINE SOFTCOM",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "83",
+        "nome_projeto": "WEBSERVICE",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "114",
+        "nome_projeto": "WEBSERVICE LARAVEL",
+        "setor": "FABRICA"
+    },
+    {
+        "id": "102",
+        "nome_projeto": "WOO COMMERCE",
+        "setor": "PED"
+    }
+]

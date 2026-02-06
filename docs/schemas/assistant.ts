@@ -51,6 +51,26 @@ export const assistantDataSchema = {
     additionalInformation: {
       type: 'string',
     },
+    product: {
+      type: 'object',
+      properties: {
+        id: { type: 'string' },
+        nome_projeto: { type: 'string' },
+        setor: { type: ['string', 'null'] },
+      },
+    },
+    users: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          nome_suporte: { type: 'string' },
+          setor: { type: ['string', 'null'] },
+          usuario_discord: { type: ['string', 'null'] },
+        },
+      },
+    },
   },
   required: ['title', 'description', 'category'],
 };
@@ -62,7 +82,7 @@ export const assistantDataSchemaDocs = {
     title: {
       type: 'string',
       description: 'Título/resumo conciso do report',
-      example: 'Erro de "Sessão expirada" no login mesmo na primeira tentativa',
+      example: 'SOFTSHOP > Login: Erro de "Sessão expirada" no login mesmo na primeira tentativa',
     },
     description: {
       type: 'string',
@@ -79,6 +99,28 @@ export const assistantDataSchemaDocs = {
       type: 'string',
       description: 'Informações adicionais do report',
       example: 'Situação acontece em todos os navegadores testados (Chrome, Firefox, Safari)',
+    },
+    product: {
+      type: 'object',
+      description: 'Produto identificado no report (identificado pela IA)',
+      properties: {
+        id: { type: 'string', example: '37' },
+        nome_projeto: { type: 'string', example: 'SOFTSHOP' },
+        setor: { type: ['string', 'null'], example: 'SQUAD BACKOFFICE' },
+      },
+    },
+    users: {
+      type: 'array',
+      description: 'Usuários identificados no report (identificados pela IA)',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', example: '28' },
+          nome_suporte: { type: 'string', example: '3Gleison' },
+          setor: { type: ['string', 'null'], example: 'SQUAD BACKOFFICE' },
+          usuario_discord: { type: ['string', 'null'], example: 'gleisonmaia' },
+        },
+      },
     },
   },
   required: ['title', 'description', 'category'],

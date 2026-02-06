@@ -1,6 +1,12 @@
 import { GoogleGenerativeAI, GenerativeModel, GenerationConfig } from '@google/generative-ai';
-import { AssistantRequest, AssistantResponse, AssistantData } from '../types/assistant.js';
-import { FORM_ASSISTANT_PROMPT } from '../prompts/form-assistant.js';
+import { AssistantRequest, AssistantResponse, AssistantData, AssistantDataFromAI, Product, User } from '../types/assistant.js';
+import { buildFormAssistantPrompt } from '../prompts/form-assistant.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * Serviço de integração com Google Gemini para processamento de relatórios
@@ -10,6 +16,9 @@ export class AIService {
   private model: GenerativeModel;
   private modelName: string;
   private generationConfig: GenerationConfig;
+  private products: Product[] = [];
+  private users: User[] = [];
+  private dataLoaded = false;
 
   constructor(apiKey: string, modelName = 'gemini-2.0-flash') {
     if (!apiKey) {
@@ -30,6 +39,51 @@ export class AIService {
       model: this.modelName,
       generationConfig: this.generationConfig,
     });
+
+    // Carregar dados de produtos e usuários
+    this.loadData();
+  }
+
+  /**
+   * Carrega os arquivos JSON de produtos e usuários
+   */
+  private loadData(): void {
+    if (this.dataLoaded) return;
+
+    try {
+      // Carregar produtos
+      const productsPath = join(__dirname, '../data/products.json');
+      const productsData = readFileSync(productsPath, 'utf-8');
+      this.products = JSON.parse(productsData);
+
+      // Carregar usuários
+      const usersPath = join(__dirname, '../data/users.json');
+      const usersData = readFileSync(usersPath, 'utf-8');
+      this.users = JSON.parse(usersData);
+
+      this.dataLoaded = true;
+    } catch (error) {
+      console.error('Erro ao carregar arquivos de dados:', error);
+      // Continuar com arrays vazios se houver erro
+      this.products = [];
+      this.users = [];
+    }
+  }
+
+  /**
+   * Mapeia ID de produto para objeto completo
+   */
+  private mapProductId(id: string | null | undefined): Product | undefined {
+    if (!id) return undefined;
+    return this.products.find(p => p.id === id);
+  }
+
+  /**
+   * Mapeia IDs de usuários para objetos completos
+   */
+  private mapUserIds(ids: string[] | undefined): User[] {
+    if (!ids || ids.length === 0) return [];
+    return this.users.filter(u => ids.includes(u.id));
   }
 
   /**
@@ -100,9 +154,6 @@ export class AIService {
         error: 'O conteúdo fornecido não contém informações suficientes para processar um relatório válido. Por favor, forneça uma descrição mais detalhada do bug, melhoria ou requisito.',
       };
     }
-
-    console.log(data)
-
     // Verificar se o título contém "Não informado"
     if (data.title.toLowerCase().includes('não informado')) {
       return {
@@ -229,11 +280,14 @@ export class AIService {
         }
       }
 
+      // Construir prompt com dados de produtos e usuários
+      const prompt = buildFormAssistantPrompt(this.products, this.users);
+
       // Construir partes do conteúdo para o Gemini
       const parts: any[] = [];
 
       // Adicionar prompt de instrução
-      parts.push({ text: FORM_ASSISTANT_PROMPT });
+      parts.push({ text: prompt });
 
       // Se houver descrição em texto, adicionar
       if (hasDescription) {
@@ -257,9 +311,9 @@ export class AIService {
         
         // Adicionar instrução para processar o áudio
         if (!hasDescription) {
-          parts.push({ text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e processe as informações conforme o prompt acima. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, você DEVE retornar um JSON com todos os campos preenchidos com "Não informado" e a categoria como "BUG". Não invente informações se o áudio não contiver conteúdo útil.' });
+          parts.push({ text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e processe as informações conforme o prompt acima. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, você DEVE retornar um JSON com todos os campos preenchidos com "Não informado" e a categoria como "BUG". Não invente informações se o áudio não contiver conteúdo útil.' });
         } else {
-          parts.push({ text: '\n\nConsidere também o áudio fornecido para complementar a descrição em texto. Se o áudio estiver vazio ou sem conteúdo útil, use apenas a descrição em texto fornecida.' });
+          parts.push({ text: '\n\nConsidere também o áudio fornecido para complementar a descrição em texto. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio ou sem conteúdo útil, use apenas a descrição em texto fornecida.' });
         }
       }
 
@@ -278,7 +332,7 @@ export class AIService {
       const text = response.text();
 
       // Parse do JSON retornado
-      let parsedData: AssistantData;
+      let parsedData: AssistantDataFromAI;
       try {
         parsedData = JSON.parse(text);
       } catch (parseError) {
@@ -300,7 +354,12 @@ export class AIService {
       }
 
       // Validar se a resposta contém informações suficientes
-      const responseValidation = this.validateAIResponse(parsedData);
+      const responseValidation = this.validateAIResponse({
+        title: parsedData.title,
+        description: parsedData.description,
+        category: parsedData.category,
+        additionalInformation: parsedData.additionalInformation,
+      });
       if (!responseValidation.isValid) {
         return {
           success: false,
@@ -316,12 +375,33 @@ export class AIService {
         parsedData.category = categoriaUpper as 'BUG' | 'MELHORIA' | 'REQUISITO';
       }
 
+      // Mapear IDs para objetos completos
+      const matchedProduct = this.mapProductId(parsedData.productId);
+      const matchedUsers = this.mapUserIds(parsedData.userIds);
+
+      // Construir resposta final
+      const finalData: AssistantData = {
+        title: parsedData.title,
+        description: parsedData.description,
+        category: parsedData.category,
+        additionalInformation: parsedData.additionalInformation,
+      };
+
+      // Adicionar produto e usuários se encontrados
+      if (matchedProduct) {
+        finalData.product = matchedProduct;
+      }
+
+      if (matchedUsers.length > 0) {
+        finalData.users = matchedUsers;
+      }
+
       const processedIn = `${Date.now() - startTime}ms`;
 
       return {
         success: true,
-        data: parsedData,
-        confidence: 0.95, // Pode ser calculado baseado em métricas futuras
+        data: finalData,
+        confidence: 0.95,
         processedIn,
       };
     } catch (error: any) {

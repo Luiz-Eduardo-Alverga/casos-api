@@ -1,0 +1,236 @@
+[
+    {
+        "id": "28",
+        "nome_suporte": "3Gleison",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "gleisonmaia"
+    },
+    {
+        "id": "455",
+        "nome_suporte": "6Junior",
+        "setor": "SQUAD XP",
+        "usuario_discord": "JuniorSoftcom"
+    },
+    {
+        "id": "60",
+        "nome_suporte": "8Jhony",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "jhony7618"
+    },
+    {
+        "id": "66",
+        "nome_suporte": "Anderson",
+        "setor": "SQUAD CLOUD",
+        "usuario_discord": "andersoncaragao"
+    },
+    {
+        "id": "1951",
+        "nome_suporte": "Antonio",
+        "setor": "SQUAD NOCODE",
+        "usuario_discord": "antonio_abrantes"
+    },
+    {
+        "id": "4",
+        "nome_suporte": "Arnaldo",
+        "setor": "SQUAD CLOUD",
+        "usuario_discord": "arnaldogneto1"
+    },
+    {
+        "id": "80",
+        "nome_suporte": "Azuyr",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "azuyr.italo"
+    },
+    {
+        "id": "1809",
+        "nome_suporte": "Carvalho",
+        "setor": "SQUAD CLOUD",
+        "usuario_discord": "fel1pesc"
+    },
+    {
+        "id": "1995",
+        "nome_suporte": "Celso",
+        "setor": "SQUAD XP",
+        "usuario_discord": "Celso.Luiz"
+    },
+    {
+        "id": "2826",
+        "nome_suporte": "Edgar Pinheiro",
+        "setor": "SQUAD OMNICHANNEL BANKING",
+        "usuario_discord": "edgar_83034"
+    },
+    {
+        "id": "282",
+        "nome_suporte": "Ernandes",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "ernandes_junior"
+    },
+    {
+        "id": "2535",
+        "nome_suporte": "Exception",
+        "setor": "SQUAD NOCODE",
+        "usuario_discord": null
+    },
+    {
+        "id": "156",
+        "nome_suporte": "Felipe",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "_felipepaiva"
+    },
+    {
+        "id": "431",
+        "nome_suporte": "Fernando",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "lfernando.silva"
+    },
+    {
+        "id": "384",
+        "nome_suporte": "Filipe Lourenço",
+        "setor": "SQUAD NOCODE",
+        "usuario_discord": "lourencofilipe"
+    },
+    {
+        "id": "1843",
+        "nome_suporte": "Freitas",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "freitasrenato"
+    },
+    {
+        "id": "72",
+        "nome_suporte": "Gama",
+        "setor": "SQUAD NOCODE",
+        "usuario_discord": ".danielgama"
+    },
+    {
+        "id": "202",
+        "nome_suporte": "Glaucio",
+        "setor": "SQUAD XP",
+        "usuario_discord": "glaucio.fmelo"
+    },
+    {
+        "id": "2798",
+        "nome_suporte": "Glaucio - Agenda",
+        "setor": "SQUAD AUTOMACAO",
+        "usuario_discord": null
+    },
+    {
+        "id": "755",
+        "nome_suporte": "Helder",
+        "setor": "SQUAD CLOUD",
+        "usuario_discord": "Helder3822"
+    },
+    {
+        "id": "1819",
+        "nome_suporte": "Heverton",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "hevertonluiz"
+    },
+    {
+        "id": "18",
+        "nome_suporte": "Jean",
+        "setor": "SQUAD NOCODE",
+        "usuario_discord": "jeanloboxd"
+    },
+    {
+        "id": "184",
+        "nome_suporte": "Laercio",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": "laerciodiniz"
+    },
+    {
+        "id": "2507",
+        "nome_suporte": "Lins",
+        "setor": "SQUAD CLOUD",
+        "usuario_discord": "linssoftcom"
+    },
+    {
+        "id": "3053",
+        "nome_suporte": "Luccas Uchoa",
+        "setor": "SQUAD SHIELD",
+        "usuario_discord": "luccascoelho_"
+    },
+    {
+        "id": "2384",
+        "nome_suporte": "Luiz",
+        "setor": "SQUAD XP",
+        "usuario_discord": "luizeduardo9844"
+    },
+    {
+        "id": "1851",
+        "nome_suporte": "Maycon",
+        "setor": "SQUAD SHIELD",
+        "usuario_discord": "mayconbrito1998"
+    },
+    {
+        "id": "816",
+        "nome_suporte": "Mendonça",
+        "setor": "SQUAD NOCODE",
+        "usuario_discord": "rodrigomendonca"
+    },
+    {
+        "id": "1618",
+        "nome_suporte": "Miranda",
+        "setor": "SQUAD SHIELD",
+        "usuario_discord": "mirandahenriques01"
+    },
+    {
+        "id": "11",
+        "nome_suporte": "Peccus",
+        "setor": "SQUAD AGENDA",
+        "usuario_discord": "_peccus"
+    },
+    {
+        "id": "516",
+        "nome_suporte": "PeD Stand By",
+        "setor": "SQUAD XP",
+        "usuario_discord": null
+    },
+    {
+        "id": "82",
+        "nome_suporte": "Pedrosa",
+        "setor": "SQUAD CLOUD",
+        "usuario_discord": "deathmetrius"
+    },
+    {
+        "id": "2300",
+        "nome_suporte": "QA",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": null
+    },
+    {
+        "id": "2227",
+        "nome_suporte": "Ramos",
+        "setor": "SQUAD SHIELD",
+        "usuario_discord": "ramos_softcom"
+    },
+    {
+        "id": "36",
+        "nome_suporte": "Rildo",
+        "setor": "SQUAD OMNICHANNEL BANKING",
+        "usuario_discord": "rildo.master"
+    },
+    {
+        "id": "2756",
+        "nome_suporte": "Samuel",
+        "setor": "SQUAD XP",
+        "usuario_discord": "idkmasac"
+    },
+    {
+        "id": "1980",
+        "nome_suporte": "Squad BO Stand By",
+        "setor": "SQUAD BACKOFFICE",
+        "usuario_discord": null
+    },
+    {
+        "id": "2309",
+        "nome_suporte": "Squad Cloud Stand By",
+        "setor": "SQUAD WEB",
+        "usuario_discord": null
+    },
+    {
+        "id": "950",
+        "nome_suporte": "Vinicius",
+        "setor": "SQUAD CLOUD",
+        "usuario_discord": "_vinicius.oliver"
+    }
+]
