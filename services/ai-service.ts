@@ -270,15 +270,15 @@ export class AIService {
       }
 
       // Validar conteúdo antes de processar
-      if (hasDescription && request.description) {
-        const contentValidation = this.validateContent(request.description);
-        if (!contentValidation.isValid) {
-          return {
-            success: false,
-            error: contentValidation.error || 'Conteúdo inválido',
-          };
-        }
-      }
+      // if (hasDescription && request.description) {
+      //   const contentValidation = this.validateContent(request.description);
+      //   if (!contentValidation.isValid) {
+      //     return {
+      //       success: false,
+      //       error: contentValidation.error || 'Conteúdo inválido',
+      //     };
+      //   }
+      // }
 
       // Construir prompt com dados de produtos e usuários
       const prompt = buildFormAssistantPrompt(this.products, this.users);
