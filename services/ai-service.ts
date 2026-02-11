@@ -270,15 +270,15 @@ export class AIService {
       }
 
       // Validar conteúdo antes de processar
-      // if (hasDescription && request.description) {
-      //   const contentValidation = this.validateContent(request.description);
-      //   if (!contentValidation.isValid) {
-      //     return {
-      //       success: false,
-      //       error: contentValidation.error || 'Conteúdo inválido',
-      //     };
-      //   }
-      // }
+      if (hasDescription && request.description) {
+        const contentValidation = this.validateContent(request.description);
+        if (!contentValidation.isValid) {
+          return {
+            success: false,
+            error: contentValidation.error || 'Conteúdo inválido',
+          };
+        }
+      }
 
       // Construir prompt com dados de produtos e usuários
       const prompt = buildFormAssistantPrompt(this.products, this.users);
@@ -354,18 +354,18 @@ export class AIService {
       }
 
       // Validar se a resposta contém informações suficientes
-      const responseValidation = this.validateAIResponse({
-        title: parsedData.title,
-        description: parsedData.description,
-        category: parsedData.category,
-        additionalInformation: parsedData.additionalInformation,
-      });
-      if (!responseValidation.isValid) {
-        return {
-          success: false,
-          error: responseValidation.error || 'Conteúdo insuficiente na resposta',
-        };
-      }
+      // const responseValidation = this.validateAIResponse({
+      //   title: parsedData.title,
+      //   description: parsedData.description,
+      //   category: parsedData.category,
+      //   additionalInformation: parsedData.additionalInformation,
+      // });
+      // if (!responseValidation.isValid) {
+      //   return {
+      //     success: false,
+      //     error: responseValidation.error || 'Conteúdo insuficiente na resposta',
+      //   };
+      // }
 
       // Validar categoria
       const categoriaUpper = parsedData.category.toUpperCase();
