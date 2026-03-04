@@ -135,121 +135,121 @@ export class AIService {
   /**
    * Valida se a resposta da IA contém informações suficientes
    */
-  private validateAIResponse(data: AssistantData): { isValid: boolean; error?: string } {
-    // Contar quantas vezes "Não informado" aparece nos campos principais
-    const naoInformadoCount = [
-      data.title,
-      data.description,
-      data.additionalInformation || '',
-    ]
-      .join(' ')
-      .toLowerCase()
-      .split('não informado')
-      .length - 1;
+  // private validateAIResponse(data: AssistantData): { isValid: boolean; error?: string } {
+  //   // Contar quantas vezes "Não informado" aparece nos campos principais
+  //   const naoInformadoCount = [
+  //     data.title,
+  //     data.description,
+  //     data.additionalInformation || '',
+  //   ]
+  //     .join(' ')
+  //     .toLowerCase()
+  //     .split('não informado')
+  //     .length - 1;
 
-    // Se houver mais de 2 ocorrências de "Não informado", considerar inválido
-    if (naoInformadoCount > 2) {
-      return {
-        isValid: false,
-        error: 'O conteúdo fornecido não contém informações suficientes para processar um relatório válido. Por favor, forneça uma descrição mais detalhada do bug, melhoria ou requisito.',
-      };
-    }
-    // Verificar se o título contém "Não informado"
-    if (data.title.toLowerCase().includes('não informado')) {
-      return {
-        isValid: false,
-        error: 'Não foi possível identificar informações suficientes no conteúdo fornecido. Por favor, forneça uma descrição mais detalhada.',
-      };
-    }
+  //   // Se houver mais de 2 ocorrências de "Não informado", considerar inválido
+  //   if (naoInformadoCount > 2) {
+  //     return {
+  //       isValid: false,
+  //       error: 'O conteúdo fornecido não contém informações suficientes para processar um relatório válido. Por favor, forneça uma descrição mais detalhada do bug, melhoria ou requisito.',
+  //     };
+  //   }
+  //   // Verificar se o título contém "Não informado"
+  //   if (data.title.toLowerCase().includes('não informado')) {
+  //     return {
+  //       isValid: false,
+  //       error: 'Não foi possível identificar informações suficientes no conteúdo fornecido. Por favor, forneça uma descrição mais detalhada.',
+  //     };
+  //   }
 
-    // Verificar se a descrição principal tem conteúdo real (não apenas "Não informado")
-    const descriptionLower = data.description.toLowerCase();
-    const descriptionWords = descriptionLower.split(/\s+/).filter(w => w.length > 0);
-    const naoInformadoWords = descriptionLower.split('não informado').length - 1;
+  //   // Verificar se a descrição principal tem conteúdo real (não apenas "Não informado")
+  //   const descriptionLower = data.description.toLowerCase();
+  //   const descriptionWords = descriptionLower.split(/\s+/).filter(w => w.length > 0);
+  //   const naoInformadoWords = descriptionLower.split('não informado').length - 1;
     
-    // Se mais de 50% das palavras são "não informado", considerar inválido
-    if (descriptionWords.length > 0 && (naoInformadoWords / descriptionWords.length) > 0.5) {
-      return {
-        isValid: false,
-        error: 'O conteúdo fornecido não contém informações suficientes. Por favor, forneça uma descrição mais detalhada do problema ou requisito.',
-      };
-    }
+  //   // Se mais de 50% das palavras são "não informado", considerar inválido
+  //   if (descriptionWords.length > 0 && (naoInformadoWords / descriptionWords.length) > 0.5) {
+  //     return {
+  //       isValid: false,
+  //       error: 'O conteúdo fornecido não contém informações suficientes. Por favor, forneça uma descrição mais detalhada do problema ou requisito.',
+  //     };
+  //   }
 
-    // Verificar padrões genéricos no título que indicam conteúdo inventado
-    const titleLower = data.title.toLowerCase();
-    const genericTitlePatterns = [
-      /produto\s*>\s*tela\s*x/i, // "Produto > Tela X"
-      /produto\s*>\s*[^:]*:\s*ajustar/i, // "Produto > ...: Ajustar"
-      /produto\s*>\s*[^:]*:\s*melhorar/i, // "Produto > ...: Melhorar"
-      /produto\s*>\s*[^:]*:\s*corrigir/i, // "Produto > ...: Corrigir"
-      /^[^>]*>\s*[^:]*:\s*(ajustar|melhorar|corrigir|implementar)/i, // Qualquer título genérico
-    ];
+  //   // Verificar padrões genéricos no título que indicam conteúdo inventado
+  //   const titleLower = data.title.toLowerCase();
+  //   const genericTitlePatterns = [
+  //     /produto\s*>\s*tela\s*x/i, // "Produto > Tela X"
+  //     /produto\s*>\s*[^:]*:\s*ajustar/i, // "Produto > ...: Ajustar"
+  //     /produto\s*>\s*[^:]*:\s*melhorar/i, // "Produto > ...: Melhorar"
+  //     /produto\s*>\s*[^:]*:\s*corrigir/i, // "Produto > ...: Corrigir"
+  //     /^[^>]*>\s*[^:]*:\s*(ajustar|melhorar|corrigir|implementar)/i, // Qualquer título genérico
+  //   ];
 
-    if (genericTitlePatterns.some(pattern => pattern.test(titleLower))) {
-      // Verificar se a descrição também é genérica
-      const genericDescriptionPatterns = [
-        /o layout da tela está desalinhado/i,
-        /dificulta a visualização dos dados/i,
-        /melhorar a organização/i,
-        /facilitar a visualização/i,
-        /exibir os dados de forma organizada/i,
-        /permitir a fácil identificação/i,
-        /validar o layout em diferentes resoluções/i,
-        /melhorar a usabilidade/i,
-        /ajustar o layout/i,
-      ];
+  //   if (genericTitlePatterns.some(pattern => pattern.test(titleLower))) {
+  //     // Verificar se a descrição também é genérica
+  //     const genericDescriptionPatterns = [
+  //       /o layout da tela está desalinhado/i,
+  //       /dificulta a visualização dos dados/i,
+  //       /melhorar a organização/i,
+  //       /facilitar a visualização/i,
+  //       /exibir os dados de forma organizada/i,
+  //       /permitir a fácil identificação/i,
+  //       /validar o layout em diferentes resoluções/i,
+  //       /melhorar a usabilidade/i,
+  //       /ajustar o layout/i,
+  //     ];
 
-      const hasGenericDescription = genericDescriptionPatterns.some(pattern => 
-        pattern.test(descriptionLower)
-      );
+  //     const hasGenericDescription = genericDescriptionPatterns.some(pattern => 
+  //       pattern.test(descriptionLower)
+  //     );
 
-      // Se o título é genérico E a descrição contém frases genéricas comuns, é provável que seja inventado
-      if (hasGenericDescription) {
-        return {
-          isValid: false,
-          error: 'O áudio fornecido não contém informações suficientes ou está sem conteúdo. Por favor, grave um áudio com uma descrição detalhada do bug, melhoria ou requisito.',
-        };
-      }
-    }
+  //     // Se o título é genérico E a descrição contém frases genéricas comuns, é provável que seja inventado
+  //     if (hasGenericDescription) {
+  //       return {
+  //         isValid: false,
+  //         error: 'O áudio fornecido não contém informações suficientes ou está sem conteúdo. Por favor, grave um áudio com uma descrição detalhada do bug, melhoria ou requisito.',
+  //       };
+  //     }
+  //   }
 
-    // Verificar se a descrição contém muitas frases genéricas/vagas
-    const vaguePhrases = [
-      'está desalinhado',
-      'dificulta a visualização',
-      'melhorar a organização',
-      'facilitar a visualização',
-      'exibir os dados',
-      'permitir a fácil',
-      'validar o layout',
-      'melhorar a usabilidade',
-      'ajustar o layout',
-      'organizar melhor',
-      'melhorar a experiência',
-      'otimizar o processo',
-    ];
+  //   // Verificar se a descrição contém muitas frases genéricas/vagas
+  //   const vaguePhrases = [
+  //     'está desalinhado',
+  //     'dificulta a visualização',
+  //     'melhorar a organização',
+  //     'facilitar a visualização',
+  //     'exibir os dados',
+  //     'permitir a fácil',
+  //     'validar o layout',
+  //     'melhorar a usabilidade',
+  //     'ajustar o layout',
+  //     'organizar melhor',
+  //     'melhorar a experiência',
+  //     'otimizar o processo',
+  //   ];
 
-    const vagueCount = vaguePhrases.filter(phrase => 
-      descriptionLower.includes(phrase)
-    ).length;
+  //   const vagueCount = vaguePhrases.filter(phrase => 
+  //     descriptionLower.includes(phrase)
+  //   ).length;
 
-    // Se houver mais de 3 frases vagas, provavelmente é conteúdo genérico
-    if (vagueCount > 3) {
-      return {
-        isValid: false,
-        error: 'O conteúdo fornecido parece ser muito genérico e não contém informações específicas. Por favor, forneça uma descrição mais detalhada e específica do problema ou requisito.',
-      };
-    }
+  //   // Se houver mais de 3 frases vagas, provavelmente é conteúdo genérico
+  //   if (vagueCount > 3) {
+  //     return {
+  //       isValid: false,
+  //       error: 'O conteúdo fornecido parece ser muito genérico e não contém informações específicas. Por favor, forneça uma descrição mais detalhada e específica do problema ou requisito.',
+  //     };
+  //   }
 
-    // Verificar se a descrição é muito curta ou vazia (menos de 100 caracteres)
-    if (data.description.trim().length < 100) {
-      return {
-        isValid: false,
-        error: 'O conteúdo fornecido é muito curto. Por favor, forneça uma descrição mais detalhada do bug, melhoria ou requisito.',
-      };
-    }
+  //   // Verificar se a descrição é muito curta ou vazia (menos de 100 caracteres)
+  //   if (data.description.trim().length < 100) {
+  //     return {
+  //       isValid: false,
+  //       error: 'O conteúdo fornecido é muito curto. Por favor, forneça uma descrição mais detalhada do bug, melhoria ou requisito.',
+  //     };
+  //   }
 
-    return { isValid: true };
-  }
+  //   return { isValid: true };
+  // }
 
   /**
    * Processa um relatório e retorna dados estruturados

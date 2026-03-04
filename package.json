@@ -5,7 +5,8 @@
   "type": "module",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-data",
+    "copy-data": "node scripts/copy-data.js",
     "start": "node dist/server.js",
     "dev": "tsx watch server.ts",
     "type-check": "tsc --noEmit"
