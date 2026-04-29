@@ -8,6 +8,7 @@ import { AIService } from './services/ai-service.js';
 import { indexRoutes } from './routes/index.js';
 import { healthRoutes } from './routes/health.js';
 import { assistantRoutes } from './routes/assistant.js';
+import { reportAnalysisRoutes } from './routes/report-analysis.js';
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -59,6 +60,10 @@ async function buildServer() {
           description: 'Assistente de IA para preenchimento automático de formulários de relatórios',
         },
         {
+          name: 'report-analysis',
+          description: 'Análise de reports (PM/PO) para refinamento e validação com desenvolvimento',
+        },
+        {
           name: 'health',
           description: 'Verificação de saúde e status da API',
         },
@@ -101,6 +106,7 @@ async function buildServer() {
   await fastify.register(indexRoutes);
   await fastify.register(healthRoutes);
   await fastify.register(assistantRoutes);
+  await fastify.register(reportAnalysisRoutes);
 
   // Tratamento global de erros
   fastify.setErrorHandler((error, request, reply) => {

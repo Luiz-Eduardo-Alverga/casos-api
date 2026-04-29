@@ -1,6 +1,16 @@
 import { GoogleGenerativeAI, GenerativeModel, GenerationConfig } from '@google/generative-ai';
-import { AssistantRequest, AssistantResponse, AssistantData, AssistantDataFromAI, Product, User } from '../types/assistant.js';
+import {
+  AssistantRequest,
+  AssistantResponse,
+  AssistantData,
+  AssistantDataFromAI,
+  Product,
+  User,
+  ReportAnalysisRequest,
+  ReportAnalysisResponse,
+} from '../types/assistant.js';
 import { buildFormAssistantPrompt } from '../prompts/form-assistant.js';
+import { REPORT_ANALYSIS_PROMPT } from '../prompts/report-analysis.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -411,6 +421,117 @@ export class AIService {
         success: false,
         error: error.message || 'Erro ao processar relatório com IA',
         processedIn,
+      };
+    }
+  }
+
+  /**
+   * Processa uma análise de report (viabilidade/PM-PO) e retorna texto estruturado.
+   */
+  async processReportAnalysis(request: ReportAnalysisRequest): Promise<ReportAnalysisResponse> {
+    const startTime = Date.now();
+
+    try {
+      const hasReport = request.report && request.report.trim().length > 0;
+      const hasDescription = request.description && request.description.trim().length > 0;
+      const hasAudio = request.audio && request.audio.length > 0;
+
+      if (!hasReport) {
+        return {
+          success: false,
+          error: 'É necessário fornecer o campo report (texto) com a solicitação do suporte',
+        };
+      }
+
+      if (!hasDescription && !hasAudio) {
+        return {
+          success: false,
+          error: 'É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio',
+        };
+      }
+
+      const reportValidation = this.validateContent(request.report);
+      if (!reportValidation.isValid) {
+        return {
+          success: false,
+          error: reportValidation.error || 'Conteúdo inválido',
+        };
+      }
+
+      if (hasDescription && request.description) {
+        const contentValidation = this.validateContent(request.description);
+        if (!contentValidation.isValid) {
+          return {
+            success: false,
+            error: contentValidation.error || 'Conteúdo inválido',
+          };
+        }
+      }
+
+      const parts: any[] = [];
+      parts.push({ text: REPORT_ANALYSIS_PROMPT });
+
+      parts.push({
+        text:
+          `\n\nUsuário, analise a seguinte solicitação de melhoria:\n\n` +
+          `${request.report}\n\n` +
+          `Com base na sua análise, gere um feedback profissional que aponte as inconsistências técnicas e proponha perguntas de investigação para o cliente, seguindo o padrão definido no seu System Prompt.`,
+      });
+
+      if (hasDescription) {
+        parts.push({
+          text: `\n\nContexto adicional do time de desenvolvimento (description):\n${request.description}`,
+        });
+      }
+
+      if (hasAudio && request.audioMimeType) {
+        const audioBase64 = request.audio?.toString('base64') || '';
+        parts.push({
+          inlineData: {
+            data: audioBase64,
+            mimeType: request.audioMimeType,
+          },
+        });
+
+        if (!hasDescription) {
+          parts.push({
+            text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e use a transcrição como contexto adicional do time de desenvolvimento (description) para complementar o report acima. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, siga apenas com o report e inclua perguntas objetivas para esclarecer o que estiver faltando.',
+          });
+        } else {
+          parts.push({
+            text: '\n\nConsidere também o áudio fornecido para complementar o contexto adicional do time de desenvolvimento (description). Se o áudio estiver vazio ou sem conteúdo útil, use apenas os textos fornecidos.',
+          });
+        }
+      }
+
+      const result = await this.model.generateContent({
+        contents: [{ role: 'user', parts }],
+        generationConfig: {
+          ...this.generationConfig,
+        },
+      });
+
+      const responseText = result.response.text()?.trim() || '';
+
+      if (!responseText) {
+        return {
+          success: false,
+          error: 'Resposta da IA está vazia',
+          processedIn: `${Date.now() - startTime}ms`,
+        };
+      }
+
+      return {
+        success: true,
+        data: { analysis: responseText },
+        confidence: 0.95,
+        processedIn: `${Date.now() - startTime}ms`,
+      };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || 'Erro ao processar análise de report com IA',
+        processedIn: `${Date.now() - startTime}ms`,
       };
     }
   }

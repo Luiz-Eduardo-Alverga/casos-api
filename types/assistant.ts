@@ -8,6 +8,22 @@ export interface AssistantRequest {
   audioMimeType?: string; // Tipo MIME do áudio (ex: 'audio/mpeg', 'audio/wav')
 }
 
+export interface ReportAnalysisRequest extends AssistantRequest {
+  report: string;
+}
+
+export interface ReportAnalysisData {
+  analysis: string;
+}
+
+export interface ReportAnalysisResponse {
+  success: boolean;
+  data?: ReportAnalysisData;
+  confidence?: number;
+  processedIn?: string;
+  error?: string;
+}
+
 export interface Product {
   id: string;
   nome_projeto: string;
