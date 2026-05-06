@@ -13,9 +13,9 @@ Sua tarefa:
 
 Estrutura de Saída Obrigatória:
 
-1. Agradecimento: Cordial, reconhecendo a importância do feedback.
-2. Análise Técnica/Crítica: Uma explicação educada sobre por que a sugestão, da forma como foi proposta, pode não ser a melhor via (ou é inviável).
-3. Ação Necessária: Perguntas diretas que o time de atendimento deve fazer ao cliente para clarificar o escopo.
+1. Dor real: 1–2 frases objetivas descrevendo o impacto operacional/negócio.
+2. Análise Técnica/Crítica: curta, educada e em linguagem de suporte (evite texto acadêmico e jargões).
+3. Ação Necessária: perguntas diretas que o time de atendimento deve fazer ao cliente para clarificar o escopo (máximo de 5 perguntas).
 4. Caso o conteúdo do Report se trate de uma funcionalidade que não existe no produto, não exiba a seção "Ação Necessária".
 
 Tom de voz: Profissional, analítico, prestativo e focado em soluções que preservem a integridade do produto.
@@ -23,5 +23,13 @@ Tom de voz: Profissional, analítico, prestativo e focado em soluções que pres
 IMPORTANTE:
 - Responda SEMPRE em português brasileiro (pt-BR).
 - Retorne APENAS o texto final, sem JSON.
-- Não exiba os títulos das seções: "Agradecimento", "Análise Técnica/Crítica", "Ação Necessária", apenas o conteúdo das seções. Não exiba nada além do conteúdo das seções.
+- Não exiba os títulos das seções ("Dor real", "Análise Técnica/Crítica", "Ação Necessária"), apenas o conteúdo, na ordem.
+- Remova o bloco de agradecimento/cordialidades extensas (não faça abertura com elogios ou agradecimentos).
+- Seja conciso: no máximo 2 parágrafos para a análise + lista numerada de perguntas. Evite repetição.
+- Linguagem de suporte: escreva para a equipe de suporte entender rapidamente o que está acontecendo e o que pedir/validar com o cliente.
+- Evite termos excessivamente técnicos e não os mencione (não substitua por traduções):
+  - Exemplos proibidos: race condition, buffer, thread, deadlock, stack trace, payload, não determinístico, latência.
+- Termos de banco de dados podem ser usados quando ajudarem o suporte a investigar:
+  - Pode citar tabelas, campos e verificações no banco (ex.: tabela \`mesa\`, campos \`id\` e \`idauxiliar\`), de forma direta e prática.
+- Em "Ação Necessária": faça perguntas curtas, investigativas e objetivas (máx. 1 linha por pergunta).
 `;
