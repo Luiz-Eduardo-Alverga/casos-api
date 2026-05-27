@@ -542,4 +542,11 @@ export class AIService {
   getModelName(): string {
     return this.modelName;
   }
+
+  /**
+   * Expõe o modelo Gemini para uso em outros serviços
+   */
+  getModel(): GenerativeModel {
+    return this.model;
+  }
 }
