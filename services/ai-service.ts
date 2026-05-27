@@ -1,4 +1,8 @@
-import { GoogleGenerativeAI, GenerativeModel, GenerationConfig } from '@google/generative-ai';
+import {
+  GoogleGenerativeAI,
+  GenerativeModel,
+  GenerationConfig,
+} from "@google/generative-ai";
 import {
   AssistantRequest,
   AssistantResponse,
@@ -8,15 +12,12 @@ import {
   User,
   ReportAnalysisRequest,
   ReportAnalysisResponse,
-} from '../types/assistant.js';
-import { buildFormAssistantPrompt } from '../prompts/form-assistant.js';
-import { REPORT_ANALYSIS_PROMPT } from '../prompts/report-analysis.js';
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+} from "../types/assistant.js";
+import { buildFormAssistantPrompt } from "../prompts/form-assistant.js";
+import { REPORT_ANALYSIS_PROMPT } from "../prompts/report-analysis.js";
+import { softFlowClient } from "./softflow-client.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const DATA_TTL_MS = 10 * 10 * 1000; // 10 minutos
 
 /**
  * Serviço de integração com Google Gemini para processamento de relatórios
@@ -28,16 +29,16 @@ export class AIService {
   private generationConfig: GenerationConfig;
   private products: Product[] = [];
   private users: User[] = [];
-  private dataLoaded = false;
+  private dataFetchedAt: number | null = null;
 
-  constructor(apiKey: string, modelName = 'gemini-2.0-flash') {
+  constructor(apiKey: string, modelName = "gemini-2.0-flash") {
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY é obrigatória');
+      throw new Error("GEMINI_API_KEY é obrigatória");
     }
 
     this.client = new GoogleGenerativeAI(apiKey);
     this.modelName = modelName;
-    
+
     this.generationConfig = {
       temperature: 0.2,
       topP: 0.95,
@@ -49,35 +50,27 @@ export class AIService {
       model: this.modelName,
       generationConfig: this.generationConfig,
     });
-
-    // Carregar dados de produtos e usuários
-    this.loadData();
   }
 
   /**
-   * Carrega os arquivos JSON de produtos e usuários
+   * Garante que os dados de usuários e produtos estão carregados e frescos.
+   * Busca da API SoftFlow na primeira chamada e a cada 60 minutos.
    */
-  private loadData(): void {
-    if (this.dataLoaded) return;
+  private async ensureDataLoaded(): Promise<void> {
+    const now = Date.now();
+    if (this.dataFetchedAt !== null && now - this.dataFetchedAt < DATA_TTL_MS)
+      return;
 
-    try {
-      // Carregar produtos
-      const productsPath = join(__dirname, '../data/products.json');
-      const productsData = readFileSync(productsPath, 'utf-8');
-      this.products = JSON.parse(productsData);
+    const [users, products] = await Promise.all([
+      softFlowClient.get<User[]>("/api/auxiliar/usuarios", {
+        somente_projetos: "true",
+      }),
+      softFlowClient.get<Product[]>("/api/auxiliar/produtos"),
+    ]);
 
-      // Carregar usuários
-      const usersPath = join(__dirname, '../data/users.json');
-      const usersData = readFileSync(usersPath, 'utf-8');
-      this.users = JSON.parse(usersData);
-
-      this.dataLoaded = true;
-    } catch (error) {
-      console.error('Erro ao carregar arquivos de dados:', error);
-      // Continuar com arrays vazios se houver erro
-      this.products = [];
-      this.users = [];
-    }
+    this.users = users ?? [];
+    this.products = products ?? [];
+    this.dataFetchedAt = now;
   }
 
   /**
@@ -85,7 +78,7 @@ export class AIService {
    */
   private mapProductId(id: string | null | undefined): Product | undefined {
     if (!id) return undefined;
-    return this.products.find(p => p.id === id);
+    return this.products.find((p) => p.id === id);
   }
 
   /**
@@ -93,20 +86,24 @@ export class AIService {
    */
   private mapUserIds(ids: string[] | undefined): User[] {
     if (!ids || ids.length === 0) return [];
-    return this.users.filter(u => ids.includes(u.id));
+    return this.users.filter((u) => ids.includes(u.id));
   }
 
   /**
    * Valida se o conteúdo fornecido é suficiente para processamento
    */
-  private validateContent(content: string): { isValid: boolean; error?: string } {
+  private validateContent(content: string): {
+    isValid: boolean;
+    error?: string;
+  } {
     const trimmed = content.trim();
-    
+
     // Verificar tamanho mínimo (pelo menos 20 caracteres)
     if (trimmed.length < 20) {
       return {
         isValid: false,
-        error: 'O conteúdo fornecido é muito curto. Por favor, forneça uma descrição mais detalhada do bug, melhoria ou requisito.',
+        error:
+          "O conteúdo fornecido é muito curto. Por favor, forneça uma descrição mais detalhada do bug, melhoria ou requisito.",
       };
     }
 
@@ -123,19 +120,21 @@ export class AIService {
     ];
 
     // Verificar se o conteúdo é apenas uma palavra genérica
-    if (invalidPatterns.some(pattern => pattern.test(trimmed))) {
+    if (invalidPatterns.some((pattern) => pattern.test(trimmed))) {
       return {
         isValid: false,
-        error: 'O conteúdo fornecido não contém informações suficientes sobre um bug, melhoria ou requisito. Por favor, forneça uma descrição mais detalhada.',
+        error:
+          "O conteúdo fornecido não contém informações suficientes sobre um bug, melhoria ou requisito. Por favor, forneça uma descrição mais detalhada.",
       };
     }
 
     // Verificar se tem pelo menos algumas palavras (mínimo 3 palavras)
-    const words = trimmed.split(/\s+/).filter(w => w.length > 0);
+    const words = trimmed.split(/\s+/).filter((w) => w.length > 0);
     if (words.length < 3) {
       return {
         isValid: false,
-        error: 'O conteúdo fornecido é muito curto. Por favor, forneça uma descrição mais detalhada com pelo menos algumas palavras.',
+        error:
+          "O conteúdo fornecido é muito curto. Por favor, forneça uma descrição mais detalhada com pelo menos algumas palavras.",
       };
     }
 
@@ -176,7 +175,7 @@ export class AIService {
   //   const descriptionLower = data.description.toLowerCase();
   //   const descriptionWords = descriptionLower.split(/\s+/).filter(w => w.length > 0);
   //   const naoInformadoWords = descriptionLower.split('não informado').length - 1;
-    
+
   //   // Se mais de 50% das palavras são "não informado", considerar inválido
   //   if (descriptionWords.length > 0 && (naoInformadoWords / descriptionWords.length) > 0.5) {
   //     return {
@@ -209,7 +208,7 @@ export class AIService {
   //       /ajustar o layout/i,
   //     ];
 
-  //     const hasGenericDescription = genericDescriptionPatterns.some(pattern => 
+  //     const hasGenericDescription = genericDescriptionPatterns.some(pattern =>
   //       pattern.test(descriptionLower)
   //     );
 
@@ -238,7 +237,7 @@ export class AIService {
   //     'otimizar o processo',
   //   ];
 
-  //   const vagueCount = vaguePhrases.filter(phrase => 
+  //   const vagueCount = vaguePhrases.filter(phrase =>
   //     descriptionLower.includes(phrase)
   //   ).length;
 
@@ -268,14 +267,18 @@ export class AIService {
     const startTime = Date.now();
 
     try {
+      await this.ensureDataLoaded();
+
       // Validar que pelo menos description ou audio foi fornecido
-      const hasDescription = request.description && request.description.trim().length > 0;
+      const hasDescription =
+        request.description && request.description.trim().length > 0;
       const hasAudio = request.audio && request.audio.length > 0;
 
       if (!hasDescription && !hasAudio) {
         return {
           success: false,
-          error: 'É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio',
+          error:
+            "É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio",
         };
       }
 
@@ -285,7 +288,7 @@ export class AIService {
         if (!contentValidation.isValid) {
           return {
             success: false,
-            error: contentValidation.error || 'Conteúdo inválido',
+            error: contentValidation.error || "Conteúdo inválido",
           };
         }
       }
@@ -301,14 +304,16 @@ export class AIService {
 
       // Se houver descrição em texto, adicionar
       if (hasDescription) {
-        parts.push({ text: `\n\nDescrição fornecida:\n${request.description}` });
+        parts.push({
+          text: `\n\nDescrição fornecida:\n${request.description}`,
+        });
       }
 
       // Se houver áudio, adicionar
       if (hasAudio && request.audioMimeType) {
         // Converter buffer para base64
-        const audioBase64 = request.audio?.toString('base64') || '';
-        
+        const audioBase64 = request.audio?.toString("base64") || "";
+
         // Determinar o tipo de arquivo baseado no MIME type
         let fileData: any = {
           inlineData: {
@@ -318,23 +323,27 @@ export class AIService {
         };
 
         parts.push(fileData);
-        
+
         // Adicionar instrução para processar o áudio
         if (!hasDescription) {
-          parts.push({ text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e processe as informações conforme o prompt acima. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, você DEVE retornar um JSON com todos os campos preenchidos com "Não informado" e a categoria como "BUG". Não invente informações se o áudio não contiver conteúdo útil.' });
+          parts.push({
+            text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e processe as informações conforme o prompt acima. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, você DEVE retornar um JSON com todos os campos preenchidos com "Não informado" e a categoria como "BUG". Não invente informações se o áudio não contiver conteúdo útil.',
+          });
         } else {
-          parts.push({ text: '\n\nConsidere também o áudio fornecido para complementar a descrição em texto. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio ou sem conteúdo útil, use apenas a descrição em texto fornecida.' });
+          parts.push({
+            text: "\n\nConsidere também o áudio fornecido para complementar a descrição em texto. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio ou sem conteúdo útil, use apenas a descrição em texto fornecida.",
+          });
         }
       }
 
-      parts.push({ text: '\n\nRetorne APENAS o JSON válido:' });
+      parts.push({ text: "\n\nRetorne APENAS o JSON válido:" });
 
       // Chamar Gemini com JSON mode
       const result = await this.model.generateContent({
-        contents: [{ role: 'user', parts }],
+        contents: [{ role: "user", parts }],
         generationConfig: {
           ...this.generationConfig,
-          responseMimeType: 'application/json',
+          responseMimeType: "application/json",
         },
       });
 
@@ -351,15 +360,19 @@ export class AIService {
         if (jsonMatch) {
           parsedData = JSON.parse(jsonMatch[0]);
         } else {
-          throw new Error('Resposta da IA não contém JSON válido');
+          throw new Error("Resposta da IA não contém JSON válido");
         }
       }
 
       // Validar estrutura básica
-      if (!parsedData.title || !parsedData.description || !parsedData.category) {
+      if (
+        !parsedData.title ||
+        !parsedData.description ||
+        !parsedData.category
+      ) {
         return {
           success: false,
-          error: 'Resposta da IA está incompleta',
+          error: "Resposta da IA está incompleta",
         };
       }
 
@@ -379,10 +392,13 @@ export class AIService {
 
       // Validar categoria
       const categoriaUpper = parsedData.category.toUpperCase();
-      if (!['BUG', 'MELHORIA', 'REQUISITO'].includes(categoriaUpper)) {
-        parsedData.category = 'BUG'; // Default
+      if (!["BUG", "MELHORIA", "REQUISITO"].includes(categoriaUpper)) {
+        parsedData.category = "BUG"; // Default
       } else {
-        parsedData.category = categoriaUpper as 'BUG' | 'MELHORIA' | 'REQUISITO';
+        parsedData.category = categoriaUpper as
+          | "BUG"
+          | "MELHORIA"
+          | "REQUISITO";
       }
 
       // Mapear IDs para objetos completos
@@ -416,10 +432,10 @@ export class AIService {
       };
     } catch (error: any) {
       const processedIn = `${Date.now() - startTime}ms`;
-      
+
       return {
         success: false,
-        error: error.message || 'Erro ao processar relatório com IA',
+        error: error.message || "Erro ao processar relatório com IA",
         processedIn,
       };
     }
@@ -428,25 +444,30 @@ export class AIService {
   /**
    * Processa uma análise de report (viabilidade/PM-PO) e retorna texto estruturado.
    */
-  async processReportAnalysis(request: ReportAnalysisRequest): Promise<ReportAnalysisResponse> {
+  async processReportAnalysis(
+    request: ReportAnalysisRequest,
+  ): Promise<ReportAnalysisResponse> {
     const startTime = Date.now();
 
     try {
       const hasReport = request.report && request.report.trim().length > 0;
-      const hasDescription = request.description && request.description.trim().length > 0;
+      const hasDescription =
+        request.description && request.description.trim().length > 0;
       const hasAudio = request.audio && request.audio.length > 0;
 
       if (!hasReport) {
         return {
           success: false,
-          error: 'É necessário fornecer o campo report (texto) com a solicitação do suporte',
+          error:
+            "É necessário fornecer o campo report (texto) com a solicitação do suporte",
         };
       }
 
       if (!hasDescription && !hasAudio) {
         return {
           success: false,
-          error: 'É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio',
+          error:
+            "É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio",
         };
       }
 
@@ -454,7 +475,7 @@ export class AIService {
       if (!reportValidation.isValid) {
         return {
           success: false,
-          error: reportValidation.error || 'Conteúdo inválido',
+          error: reportValidation.error || "Conteúdo inválido",
         };
       }
 
@@ -463,7 +484,7 @@ export class AIService {
         if (!contentValidation.isValid) {
           return {
             success: false,
-            error: contentValidation.error || 'Conteúdo inválido',
+            error: contentValidation.error || "Conteúdo inválido",
           };
         }
       }
@@ -485,7 +506,7 @@ export class AIService {
       }
 
       if (hasAudio && request.audioMimeType) {
-        const audioBase64 = request.audio?.toString('base64') || '';
+        const audioBase64 = request.audio?.toString("base64") || "";
         parts.push({
           inlineData: {
             data: audioBase64,
@@ -495,28 +516,28 @@ export class AIService {
 
         if (!hasDescription) {
           parts.push({
-            text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e use a transcrição como contexto adicional do time de desenvolvimento (description) para complementar o report acima. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, siga apenas com o report e inclua perguntas objetivas para esclarecer o que estiver faltando.',
+            text: "\n\nIMPORTANTE: Transcreva o áudio fornecido e use a transcrição como contexto adicional do time de desenvolvimento (description) para complementar o report acima. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, siga apenas com o report e inclua perguntas objetivas para esclarecer o que estiver faltando.",
           });
         } else {
           parts.push({
-            text: '\n\nConsidere também o áudio fornecido para complementar o contexto adicional do time de desenvolvimento (description). Se o áudio estiver vazio ou sem conteúdo útil, use apenas os textos fornecidos.',
+            text: "\n\nConsidere também o áudio fornecido para complementar o contexto adicional do time de desenvolvimento (description). Se o áudio estiver vazio ou sem conteúdo útil, use apenas os textos fornecidos.",
           });
         }
       }
 
       const result = await this.model.generateContent({
-        contents: [{ role: 'user', parts }],
+        contents: [{ role: "user", parts }],
         generationConfig: {
           ...this.generationConfig,
         },
       });
 
-      const responseText = result.response.text()?.trim() || '';
+      const responseText = result.response.text()?.trim() || "";
 
       if (!responseText) {
         return {
           success: false,
-          error: 'Resposta da IA está vazia',
+          error: "Resposta da IA está vazia",
           processedIn: `${Date.now() - startTime}ms`,
         };
       }
@@ -530,7 +551,7 @@ export class AIService {
     } catch (error: any) {
       return {
         success: false,
-        error: error.message || 'Erro ao processar análise de report com IA',
+        error: error.message || "Erro ao processar análise de report com IA",
         processedIn: `${Date.now() - startTime}ms`,
       };
     }
