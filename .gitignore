@@ -33,5 +33,5 @@ coverage/
 .nyc_output/
 
 # Docs
-docs/
-deploy-vps-traefik.md
+docs/deploy-vps-traefik.md
+
