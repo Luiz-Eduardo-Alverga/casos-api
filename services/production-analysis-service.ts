@@ -1,4 +1,4 @@
-import { GenerativeModel } from '@google/generative-ai';
+import { GenerativeModel } from "@google/generative-ai";
 import {
   ProductionRecord,
   ProductionConfig,
@@ -10,10 +10,10 @@ import {
   StatusColaborador,
   AIProductionAnalysisResponse,
   SoftFlowApiResponse,
-} from '../types/production-analysis.js';
-import { ProductionPreProcessor } from './production-preprocessor.js';
-import { buildProductionAnalysisPrompt } from '../prompts/production-analysis.js';
-import { softFlowClient } from './softflow-client.js';
+} from "../types/production-analysis.js";
+import { ProductionPreProcessor } from "./production-preprocessor.js";
+import { buildProductionAnalysisPrompt } from "../prompts/production-analysis.js";
+import { softFlowClient } from "./softflow-client.js";
 
 const preprocessor = new ProductionPreProcessor();
 
@@ -42,7 +42,8 @@ export class ProductionAnalysisService {
       if (records.length === 0) {
         return {
           success: false,
-          error: 'Nenhum registro de produção encontrado para os filtros informados.',
+          error:
+            "Nenhum registro de produção encontrado para os filtros informados.",
           processedIn: `${Date.now() - startTime}ms`,
         };
       }
@@ -60,13 +61,13 @@ export class ProductionAnalysisService {
       );
 
       const resultado = await this.model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
         generationConfig: {
           temperature: 0.1,
           topP: 0.95,
           topK: 40,
           maxOutputTokens: 4096,
-          responseMimeType: 'application/json',
+          responseMimeType: "application/json",
         },
       });
 
@@ -80,28 +81,33 @@ export class ProductionAnalysisService {
         if (match) {
           aiResponse = JSON.parse(match[0]);
         } else {
-          throw new Error('Resposta da IA não contém JSON válido');
+          throw new Error("Resposta da IA não contém JSON válido");
         }
       }
 
-      if (!aiResponse?.colaboradores || !Array.isArray(aiResponse.colaboradores)) {
-        throw new Error('Estrutura da resposta da IA está incompleta');
+      if (
+        !aiResponse?.colaboradores ||
+        !Array.isArray(aiResponse.colaboradores)
+      ) {
+        throw new Error("Estrutura da resposta da IA está incompleta");
       }
 
       // 4. Transformar inconsistencias: objeto[] → string[]
-      const colaboradores: ColaboradorAnalysis[] = aiResponse.colaboradores.map(col => ({
-        nome_suporte: col.nome_suporte,
-        data_producao: col.data_producao,
-        status: this.validarStatus(col.status),
-        motivo_status: col.motivo_status,
-        total_horas: col.total_horas,
-        janela_trabalho: col.janela_trabalho,
-        horas_tecnicas: col.horas_tecnicas,
-        horas_nao_tecnicas: col.horas_nao_tecnicas,
-        percentual_tecnico: col.percentual_tecnico,
-        percentual_nao_tecnico: col.percentual_nao_tecnico,
-        inconsistencias: (col.inconsistencias ?? []).map(i => i.descricao),
-      }));
+      const colaboradores: ColaboradorAnalysis[] = aiResponse.colaboradores.map(
+        (col) => ({
+          nome_suporte: col.nome_suporte,
+          data_producao: col.data_producao,
+          status: this.validarStatus(col.status),
+          motivo_status: col.motivo_status,
+          total_horas: col.total_horas,
+          janela_trabalho: col.janela_trabalho,
+          horas_tecnicas: col.horas_tecnicas,
+          horas_nao_tecnicas: col.horas_nao_tecnicas,
+          percentual_tecnico: col.percentual_tecnico,
+          percentual_nao_tecnico: col.percentual_nao_tecnico,
+          inconsistencias: (col.inconsistencias ?? []).map((i) => i.descricao),
+        }),
+      );
 
       // 5. Calcular resumo_squad algoritmicamente (nunca delegado à IA)
       const resumo_squad = this.calcularResumoSquad(colaboradores);
@@ -114,7 +120,7 @@ export class ProductionAnalysisService {
     } catch (error: any) {
       return {
         success: false,
-        error: error.message || 'Erro ao processar análise de produção',
+        error: error.message || "Erro ao processar análise de produção",
         processedIn: `${Date.now() - startTime}ms`,
       };
     }
@@ -130,18 +136,19 @@ export class ProductionAnalysisService {
     const params: Record<string, string> = {
       data_producao_inicio: request.data_producao_inicio,
       data_producao_fim: request.data_producao_fim,
+      tipo: "CASOS",
     };
 
     if (request.projeto_id) params.projeto_id = request.projeto_id;
     if (request.usuario) params.usuario = request.usuario;
 
     const response = await softFlowClient.get<SoftFlowApiResponse>(
-      '/api/producao-horas-analiticas',
+      "/api/producao-horas-analiticas",
       params,
     );
 
     if (!response?.success || !Array.isArray(response?.data)) {
-      throw new Error('Resposta inválida da API externa SoftFlow');
+      throw new Error("Resposta inválida da API externa SoftFlow");
     }
 
     return response.data;
@@ -150,7 +157,9 @@ export class ProductionAnalysisService {
   /**
    * Mescla o config recebido com os defaults, aplicando apenas os campos fornecidos.
    */
-  private resolverConfig(parcial?: Partial<ProductionConfig>): ProductionConfig {
+  private resolverConfig(
+    parcial?: Partial<ProductionConfig>,
+  ): ProductionConfig {
     if (!parcial) return { ...DEFAULT_PRODUCTION_CONFIG };
     return { ...DEFAULT_PRODUCTION_CONFIG, ...parcial };
   }
@@ -160,20 +169,22 @@ export class ProductionAnalysisService {
    */
   private validarStatus(status: string): StatusColaborador {
     const validos: StatusColaborador[] = [
-      'CONFORME',
-      'ALERTA_LEVE',
-      'ALERTA_CRITICO',
-      'INCONSISTENCIA',
+      "CONFORME",
+      "ALERTA_LEVE",
+      "ALERTA_CRITICO",
+      "INCONSISTENCIA",
     ];
     return validos.includes(status as StatusColaborador)
       ? (status as StatusColaborador)
-      : 'ALERTA_CRITICO';
+      : "ALERTA_CRITICO";
   }
 
   /**
    * Calcula o resumo do squad com base na lista final de colaboradores.
    */
-  private calcularResumoSquad(colaboradores: ColaboradorAnalysis[]): SquadSummary {
+  private calcularResumoSquad(
+    colaboradores: ColaboradorAnalysis[],
+  ): SquadSummary {
     const total = colaboradores.length;
 
     const contagem: Record<StatusColaborador, number> = {
@@ -191,8 +202,14 @@ export class ProductionAnalysisService {
 
     return {
       total_colaboradores: total,
-      conforme: { count: contagem.CONFORME, percentual: pct(contagem.CONFORME) },
-      alerta_leve: { count: contagem.ALERTA_LEVE, percentual: pct(contagem.ALERTA_LEVE) },
+      conforme: {
+        count: contagem.CONFORME,
+        percentual: pct(contagem.CONFORME),
+      },
+      alerta_leve: {
+        count: contagem.ALERTA_LEVE,
+        percentual: pct(contagem.ALERTA_LEVE),
+      },
       alerta_critico: {
         count: contagem.ALERTA_CRITICO,
         percentual: pct(contagem.ALERTA_CRITICO),

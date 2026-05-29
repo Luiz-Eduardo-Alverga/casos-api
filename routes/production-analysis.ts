@@ -91,7 +91,6 @@ export async function productionAnalysisRoutes(fastify: FastifyInstance) {
 
         const service = new ProductionAnalysisService(aiService.getModel());
         const result = await service.analyze(analysisRequest);
-        console.log(result);
 
         if (!result.success) {
           return reply.code(500).send(result);
@@ -148,13 +147,17 @@ export async function productionAnalysisRoutes(fastify: FastifyInstance) {
         const configParcial: Partial<ProductionConfig> = {};
         if (q.meta_minutos) configParcial.meta_minutos = Number(q.meta_minutos);
         if (q.tolerancia_meta_minutos)
-          configParcial.tolerancia_meta_minutos = Number(q.tolerancia_meta_minutos);
+          configParcial.tolerancia_meta_minutos = Number(
+            q.tolerancia_meta_minutos,
+          );
         if (q.janela_inicio) configParcial.janela_inicio = q.janela_inicio;
         if (q.janela_fim) configParcial.janela_fim = q.janela_fim;
         if (q.limite_almoco_minutos)
           configParcial.limite_almoco_minutos = Number(q.limite_almoco_minutos);
         if (q.tolerancia_almoco_minutos)
-          configParcial.tolerancia_almoco_minutos = Number(q.tolerancia_almoco_minutos);
+          configParcial.tolerancia_almoco_minutos = Number(
+            q.tolerancia_almoco_minutos,
+          );
         if (q.limite_apagao_minutos)
           configParcial.limite_apagao_minutos = Number(q.limite_apagao_minutos);
         if (q.limite_producao_virada_minutos)

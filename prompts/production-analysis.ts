@@ -27,26 +27,28 @@ export function buildProductionAnalysisPrompt(
   const limiarCritico = toDisplay(limiarCriticoMinutos);
   const limiarLeve = toDisplay(limiarLeveMinutos);
 
+  const almocoLimiteMinutos = config.limite_almoco_minutos + config.tolerancia_almoco_minutos;
+
   return `Você é um Especialista em Operações de TI, Agile Coach e Auditor de Carga Horária de Squads de Tecnologia. Seu objetivo é analisar registros de horas (timesheet) de colaboradores e retornar um relatório de auditoria estruturado, direto e focado em ações corretivas.
 
 ### Parâmetros de Negócio (use EXATAMENTE estes valores):
 - Janela Comercial: ${config.janela_inicio} às ${config.janela_fim}
 - Meta de Carga Horária: entre ${metaMin} e ${metaMax} por dia (Total Geral)
-- Limite do Almoço: ${almocoLimite} — alerta se > ${almocoAlerta} ("Almoço longo/estendido")
+- Almoço: gap entre 11:00–14:30 somente é ALMOCO_LONGO se a duração for MAIOR QUE ${almocoAlerta} (${almocoLimiteMinutos} minutos exatos). Gaps de até ${almocoAlerta} são normais e NÃO geram alerta.
 - Apagão de Registro: gap sem tarefas > ${apagao} contínuos dentro da janela comercial
 - Produção Virada: registro com duração > ${virada} ou hora_fechamento < hora_abertura (contador esquecido)
 
 ### Critérios de Status (prioridade: INCONSISTENCIA > ALERTA_CRITICO > ALERTA_LEVE > CONFORME):
 - INCONSISTENCIA: sobreposição de horários entre tarefas OU produção virada (contador esquecido)
 - ALERTA_CRITICO: carga total < ${limiarCritico} (${limiarCriticoMinutos} min) OU apagão > ${apagao} dentro da janela comercial
-- ALERTA_LEVE: carga entre ${limiarCritico} e ${limiarLeve} OU almoço > ${almocoAlerta}
-- CONFORME: carga >= ${limiarLeve}, sem sobreposições, sem apagões relevantes
+- ALERTA_LEVE: carga entre ${limiarCritico} e ${limiarLeve} OU almoço ESTRITAMENTE MAIOR QUE ${almocoAlerta} (> ${almocoLimiteMinutos} min)
+- CONFORME: carga >= ${limiarLeve}, sem sobreposições, sem apagões relevantes, almoço <= ${almocoAlerta}
 
 ### Regras de Ouro para Detecção:
 1. SOBREPOSICAO: tarefa B inicia ANTES que tarefa A termine. Calcule os minutos exatos de conflito e cite os registros envolvidos.
 2. APAGAO: ordene por hora_abertura, verifique gaps > ${apagao} DENTRO da janela ${config.janela_inicio}–${config.janela_fim}. Ignore períodos fora da janela comercial.
 3. PRODUCAO_VIRADA: realizado_minutos > ${config.limite_producao_virada_minutos} OU hora_fechamento < hora_abertura (virou meia-noite).
-4. ALMOCO_LONGO: identifique o maior gap entre 11:00 e 14:30. Se > ${almocoAlerta}, registre como almoço estendido.
+4. ALMOCO_LONGO: identifique o maior gap entre 11:00 e 14:30. Registre como ALMOCO_LONGO APENAS se a duração for MAIOR QUE ${almocoAlerta} (${almocoLimiteMinutos} minutos). Exemplo: 79 minutos com limite de ${almocoLimiteMinutos} minutos NÃO é ALMOCO_LONGO. 86 minutos com limite de ${almocoLimiteMinutos} minutos É ALMOCO_LONGO.
 5. CARGA_BAIXA: total do dia < ${limiarCritico}.
 
 ### Métricas pré-calculadas pelo sistema (use como ponto de partida e valide com os registros brutos):
@@ -59,7 +61,8 @@ ${rawRecords}
 - Responda SEMPRE em português brasileiro (pt-BR).
 - Seja direto e objetivo nas descrições — cite horários e números de registro quando relevante.
 - Não invente inconsistências que não estejam nos dados.
-- Se o sistema sugeriu um status, você pode confirmá-lo ou ajustá-lo com base nos registros brutos.
+- O sistema pré-calculou um "status_sugerido" nas métricas. Se ele indica "CONFORME", somente altere para outro status se os registros brutos revelarem uma inconsistência clara que o algoritmo não detectou.
+- NUNCA classifique como ALMOCO_LONGO se a duração do gap for menor ou igual a ${almocoAlerta} (${almocoLimiteMinutos} min).
 - O campo "motivo_status" deve ser uma frase curta (máx. 2 linhas) explicando o principal problema.
 
 ### Retorne APENAS este JSON válido (sem markdown, sem texto fora do JSON):
