@@ -15,7 +15,7 @@
     "api",
     "fastify",
     "typescript",
-    "gemini",
+    "openai",
     "ai"
   ],
   "author": "",
@@ -26,10 +26,10 @@
     "@fastify/static": "^9.0.0",
     "@fastify/swagger": "^9.6.1",
     "@fastify/swagger-ui": "^5.2.5",
-    "@google/generative-ai": "^0.21.0",
     "axios": "^1.16.1",
     "dotenv": "^16.4.5",
-    "fastify": "^5.7.4"
+    "fastify": "^5.7.4",
+    "openai": "^6.42.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",

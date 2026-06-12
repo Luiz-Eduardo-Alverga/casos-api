@@ -1,4 +1,4 @@
-import { GenerativeModel } from "@google/generative-ai";
+import { AIService } from "./ai-service.js";
 import {
   ProductionRecord,
   ProductionConfig,
@@ -19,13 +19,13 @@ const preprocessor = new ProductionPreProcessor();
 
 /**
  * Orquestra o fluxo completo de análise de produção:
- * API externa → pré-processamento → IA (Gemini) → resposta estruturada
+ * API externa → pré-processamento → IA (OpenAI-compatible) → resposta estruturada
  */
 export class ProductionAnalysisService {
-  private model: GenerativeModel;
+  private aiService: AIService;
 
-  constructor(model: GenerativeModel) {
-    this.model = model;
+  constructor(aiService: AIService) {
+    this.aiService = aiService;
   }
 
   async analyze(
@@ -36,7 +36,6 @@ export class ProductionAnalysisService {
     try {
       const config = this.resolverConfig(request.configuracao);
 
-      // 1. Buscar dados na API externa
       const records = await this.buscarDadosExternos(request);
 
       if (records.length === 0) {
@@ -48,30 +47,20 @@ export class ProductionAnalysisService {
         };
       }
 
-      // 2. Pré-processar algoritmicamente
       const metricas = preprocessor.process(records, config);
       const metricasSerializadas = preprocessor.serializarMetricas(metricas);
       const registrosSerializados = JSON.stringify(records, null, 2);
 
-      // 3. Montar prompt e chamar a IA
       const prompt = buildProductionAnalysisPrompt(
         config,
         metricasSerializadas,
         registrosSerializados,
       );
 
-      const resultado = await this.model.generateContent({
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.1,
-          topP: 0.95,
-          topK: 40,
-          maxOutputTokens: 4096,
-          responseMimeType: "application/json",
-        },
+      const textoResposta = await this.aiService.generateJSON(prompt, {
+        temperature: 0.1,
+        maxTokens: 4096,
       });
-
-      const textoResposta = resultado.response.text();
 
       let aiResponse: AIProductionAnalysisResponse;
       try {
@@ -92,7 +81,6 @@ export class ProductionAnalysisService {
         throw new Error("Estrutura da resposta da IA está incompleta");
       }
 
-      // 4. Transformar inconsistencias: objeto[] → string[]
       const colaboradores: ColaboradorAnalysis[] = aiResponse.colaboradores.map(
         (col) => ({
           nome_suporte: col.nome_suporte,
@@ -109,7 +97,6 @@ export class ProductionAnalysisService {
         }),
       );
 
-      // 5. Calcular resumo_squad algoritmicamente (nunca delegado à IA)
       const resumo_squad = this.calcularResumoSquad(colaboradores);
 
       return {
@@ -126,10 +113,6 @@ export class ProductionAnalysisService {
     }
   }
 
-  /**
-   * Consulta a API SoftFlow para obter os registros de produção.
-   * Utiliza o softFlowClient que gerencia autenticação dinamicamente.
-   */
   private async buscarDadosExternos(
     request: ProductionAnalysisRequest,
   ): Promise<ProductionRecord[]> {
@@ -154,9 +137,6 @@ export class ProductionAnalysisService {
     return response.data;
   }
 
-  /**
-   * Mescla o config recebido com os defaults, aplicando apenas os campos fornecidos.
-   */
   private resolverConfig(
     parcial?: Partial<ProductionConfig>,
   ): ProductionConfig {
@@ -164,9 +144,6 @@ export class ProductionAnalysisService {
     return { ...DEFAULT_PRODUCTION_CONFIG, ...parcial };
   }
 
-  /**
-   * Garante que o status retornado pela IA é um valor válido.
-   */
   private validarStatus(status: string): StatusColaborador {
     const validos: StatusColaborador[] = [
       "CONFORME",
@@ -179,9 +156,6 @@ export class ProductionAnalysisService {
       : "ALERTA_CRITICO";
   }
 
-  /**
-   * Calcula o resumo do squad com base na lista final de colaboradores.
-   */
   private calcularResumoSquad(
     colaboradores: ColaboradorAnalysis[],
   ): SquadSummary {

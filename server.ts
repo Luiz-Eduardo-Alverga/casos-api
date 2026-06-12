@@ -47,7 +47,7 @@ async function buildServer() {
       info: {
         title: "Assistente de IA - API de Preenchimento de Formulários",
         description:
-          "API REST para processamento de relatórios de bugs, melhorias e requisitos usando Google Gemini",
+          "API REST para processamento de relatórios de bugs, melhorias e requisitos usando IA OpenAI-compatible (iarouter)",
         version: "1.0.0",
       },
       servers: [
@@ -91,21 +91,25 @@ async function buildServer() {
     transformStaticCSP: (header) => header,
   });
 
-  // Inicializar serviço de IA (Gemini)
-  const geminiApiKey = process.env.GEMINI_API_KEY || "";
-  const geminiModel = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+  // Inicializar serviço de IA (OpenAI-compatible / iarouter)
+  const openaiApiKey = process.env.OPENAI_API_KEY || "";
+  const openaiBaseUrl =
+    process.env.OPENAI_BASE_URL || "https://iarouter.softcomia.com/v1";
+  const openaiModel = process.env.OPENAI_MODEL || "arnaldo-combo";
 
   let aiService: AIService | undefined;
   try {
-    if (!geminiApiKey || geminiApiKey === "your-api-key-here") {
+    if (!openaiApiKey || openaiApiKey === "your-api-key-here") {
       fastify.log.warn(
-        "GEMINI_API_KEY não configurada. O serviço de IA não funcionará corretamente.",
+        "OPENAI_API_KEY não configurada. O serviço de IA não funcionará corretamente.",
       );
-      fastify.log.warn("Configure a variável GEMINI_API_KEY no arquivo .env");
+      fastify.log.warn("Configure a variável OPENAI_API_KEY no arquivo .env");
     } else {
-      aiService = new AIService(geminiApiKey, geminiModel);
+      aiService = new AIService(openaiApiKey, openaiModel, openaiBaseUrl);
       fastify.decorate("aiService", aiService);
-      fastify.log.info(`Gemini configurado com o modelo: ${geminiModel}`);
+      fastify.log.info(
+        `IA configurada com o modelo: ${openaiModel} (${openaiBaseUrl})`,
+      );
     }
   } catch (error: any) {
     fastify.log.error(error, "Erro ao inicializar AIService");

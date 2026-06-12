@@ -34,7 +34,7 @@ export async function reportAnalysisRoutes(fastify: FastifyInstance) {
           return reply.code(503).send({
             success: false,
             error:
-              "Serviço de IA não está disponível. Verifique a configuração da GEMINI_API_KEY.",
+              "Serviço de IA não está disponível. Verifique a configuração da OPENAI_API_KEY.",
           });
         }
 

@@ -12,7 +12,7 @@ import {
 
 /**
  * Rota de auditoria de produção diária dos colaboradores do squad.
- * Consulta a API SoftFlow, pré-processa e analisa via Gemini.
+ * Consulta a API SoftFlow, pré-processa e analisa via IA (OpenAI-compatible).
  */
 export async function productionAnalysisRoutes(fastify: FastifyInstance) {
   fastify.get<{ Querystring: Record<string, string> }>(
@@ -54,7 +54,7 @@ export async function productionAnalysisRoutes(fastify: FastifyInstance) {
           return reply.code(503).send({
             success: false,
             error:
-              "Serviço de IA não está disponível. Verifique a configuração da GEMINI_API_KEY.",
+              "Serviço de IA não está disponível. Verifique a configuração da OPENAI_API_KEY.",
           });
         }
 
@@ -89,7 +89,7 @@ export async function productionAnalysisRoutes(fastify: FastifyInstance) {
             Object.keys(configParcial).length > 0 ? configParcial : undefined,
         };
 
-        const service = new ProductionAnalysisService(aiService.getModel());
+        const service = new ProductionAnalysisService(aiService);
         const result = await service.analyze(analysisRequest);
 
         if (!result.success) {
@@ -140,7 +140,7 @@ export async function productionAnalysisRoutes(fastify: FastifyInstance) {
           return reply.code(503).send({
             success: false,
             error:
-              "Serviço de IA não está disponível. Verifique a configuração da GEMINI_API_KEY.",
+              "Serviço de IA não está disponível. Verifique a configuração da OPENAI_API_KEY.",
           });
         }
 
@@ -173,7 +173,7 @@ export async function productionAnalysisRoutes(fastify: FastifyInstance) {
             Object.keys(configParcial).length > 0 ? configParcial : undefined,
         };
 
-        const service = new ProductionAnalysisService(aiService.getModel());
+        const service = new ProductionAnalysisService(aiService);
         const result = await service.analyze(analysisRequest);
 
         if (!result.success) {

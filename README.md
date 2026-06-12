@@ -1,19 +1,19 @@
 # Assistente de IA - API de Preenchimento de Formulários
 
-API REST desenvolvida com Node.js, TypeScript e Fastify que utiliza Google Gemini para processar descrições de bugs, melhorias e requisitos, retornando dados estruturados em JSON para preenchimento automático de formulários. A IA identifica automaticamente produtos e usuários mencionados no conteúdo (texto ou áudio).
+API REST desenvolvida com Node.js, TypeScript e Fastify que utiliza IA OpenAI-compatible (iarouter) para processar descrições de bugs, melhorias e requisitos, retornando dados estruturados em JSON para preenchimento automático de formulários. A IA identifica automaticamente produtos e usuários mencionados no conteúdo (texto ou áudio).
 
 ## 🚀 Tecnologias
 
 - **Node.js** com TypeScript (ESM modules)
 - **Fastify 4.x** - Framework web rápido
-- **Google Gemini** - Modelo de IA para processamento
+- **OpenAI-compatible (iarouter)** - Modelo de IA para processamento
 - **Swagger/OpenAPI** - Documentação automática da API
 
 ## 📋 Pré-requisitos
 
 - Node.js 18+ 
 - npm ou yarn
-- Chave de API do Google Gemini
+- Chave de API do iarouter (OpenAI-compatible)
 
 ## 🔧 Instalação
 
@@ -30,8 +30,9 @@ cp .env.example .env
 
 4. Edite o arquivo `.env` e adicione sua chave de API:
 ```env
-GEMINI_API_KEY=sua-chave-aqui
-GEMINI_MODEL=gemini-2.0-flash
+OPENAI_API_KEY=sua-chave-aqui
+OPENAI_BASE_URL=https://iarouter.softcomia.com/v1
+OPENAI_MODEL=arnaldo-combo
 PORT=3001
 ```
 
@@ -201,7 +202,7 @@ A IA usa matching inteligente para identificar produtos e usuários mesmo com va
 
 ## ⚠️ Notas
 
-- Certifique-se de ter uma chave de API válida do Google Gemini
+- Certifique-se de ter uma chave de API válida do iarouter (OpenAI-compatible)
 - A API está configurada para aceitar CORS de todas as origens em desenvolvimento
 - Em produção, ajuste as configurações de CORS conforme necessário
 - Os arquivos `products.json` e `users.json` são carregados automaticamente na inicialização do serviço
