@@ -75,7 +75,7 @@ export class AIService {
     ]);
 
     this.users = users ?? [];
-    this.products = products ?? [];
+    this.products = (products ?? []).filter((p) => p.desativado !== "1");
     this.dataFetchedAt = now;
   }
 
@@ -419,9 +419,9 @@ export class AIService {
         {
           type: "text",
           text:
-            `\n\nUsuário, analise a seguinte solicitação de melhoria:\n\n` +
+            `\n\nMensagem recebida do suporte (report):\n\n` +
             `${request.report}\n\n` +
-            `Com base na sua análise, gere um feedback profissional que aponte as inconsistências técnicas e proponha perguntas de investigação para o cliente, seguindo o padrão definido no seu System Prompt.`,
+            `Com base no texto acima, gere a resposta melhorada no estilo WhatsApp corporativo, aplicando sua análise de viabilidade, tradução da dor e direcionamento quando necessário.`,
         },
       ];
 

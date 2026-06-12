@@ -28,6 +28,7 @@ export interface Product {
   id: string;
   nome_projeto: string;
   setor: string | null;
+  desativado: string | null;
 }
 
 export interface User {
@@ -40,7 +41,7 @@ export interface User {
 export interface AssistantDataFromAI {
   title: string;
   description: string;
-  category: 'BUG' | 'MELHORIA' | 'REQUISITO';
+  category: "BUG" | "MELHORIA" | "REQUISITO";
   additionalInformation?: string;
   productId?: string; // ID do produto identificado pela IA (apenas um produto por report)
   userIds?: string[]; // IDs dos usuários identificados pela IA
@@ -49,7 +50,7 @@ export interface AssistantDataFromAI {
 export interface AssistantData {
   title: string;
   description: string;
-  category: 'BUG' | 'MELHORIA' | 'REQUISITO';
+  category: "BUG" | "MELHORIA" | "REQUISITO";
   additionalInformation?: string;
   product?: Product; // Produto completo identificado
   users?: User[]; // Usuários completos identificados
