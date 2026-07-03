@@ -46,6 +46,7 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         let description: string | undefined;
         let audio: Buffer | undefined;
         let audioMimeType: string | undefined;
+        let squadSetor: string | undefined;
 
         // Verificar se é multipart/form-data
         if (request.isMultipart()) {
@@ -64,6 +65,8 @@ export async function assistantRoutes(fastify: FastifyInstance) {
               // É um campo de texto
               if (part.fieldname === 'description') {
                 description = part.value as string;
+              } else if (part.fieldname === 'squadSetor') {
+                squadSetor = part.value as string;
               }
             }
           }
@@ -80,6 +83,7 @@ export async function assistantRoutes(fastify: FastifyInstance) {
           }
           
           description = body.description;
+          squadSetor = body.squadSetor;
         }
 
         // Validar que pelo menos um foi fornecido
@@ -96,7 +100,8 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         const result = await aiService.processReport({ 
           description, 
           audio, 
-          audioMimeType 
+          audioMimeType,
+          squadSetor,
         });
 
         if (!result.success) {

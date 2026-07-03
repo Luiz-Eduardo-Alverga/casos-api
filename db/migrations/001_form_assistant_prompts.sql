@@ -1,18 +1,26 @@
-/**
- * Montagem do prompt do assistente de formulários.
- *
- * O banco guarda apenas a parte EDITÁVEL (regras do Squad).
- * Blocos fixos (identificação de produto/usuário e contrato JSON) são
- * concatenados automaticamente pelo backend em runtime.
- */
+-- Migration: Criação da tabela form_assistant_prompts
+-- Permite cadastrar e editar prompts do assistente de IA por Squad.
+-- squad_setor = null → prompt DEFAULT (usado por não-squads e squads sem prompt próprio)
 
-import type { Product, User } from "../types/assistant.js";
+CREATE TABLE IF NOT EXISTS form_assistant_prompts (
+  id          uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+  squad_setor text        UNIQUE,
+  name        text        NOT NULL,
+  is_active   boolean     NOT NULL DEFAULT true,
+  template    text        NOT NULL,
+  created_by  uuid        REFERENCES app_users(id) ON DELETE SET NULL,
+  updated_by  uuid        REFERENCES app_users(id) ON DELETE SET NULL,
+  created_at  timestamptz DEFAULT now(),
+  updated_at  timestamptz DEFAULT now()
+);
 
-/**
- * Parte editável padrão (fallback se o banco estiver indisponível).
- * Deve estar em sincronia com o seed em db/migrations/002_editable_prompt_only.sql.
- */
-export const DEFAULT_EDITABLE_TEMPLATE = `Você é um assistente especializado em processar relatórios de bugs, melhorias e requisitos de produtos.
+-- Seed: prompt padrão (conteúdo original de prompts/form-assistant.ts)
+-- Usa {{productsList}} e {{usersList}} como placeholders injetados em runtime.
+INSERT INTO form_assistant_prompts (squad_setor, name, template)
+VALUES (
+  null,
+  'Prompt Padrão',
+  'Você é um assistente especializado em processar relatórios de bugs, melhorias e requisitos de produtos.
 Analise a descrição fornecida e extraia as informações seguindo rigorosamente as regras abaixo:
 
 ### REGRAS DE COMPORTAMENTO E EXTRAÇÃO:
@@ -21,9 +29,23 @@ Analise a descrição fornecida e extraia as informações seguindo rigorosament
 - Evidências: Preserve todos os links de vídeos, prints ou arquivos do Discord. Insira imagens usando Markdown ![](URL) exatamente como fornecidas.
 - Tom e Estilo: Objetivo, técnico e conciso. Não invente informações.
 
+### IDENTIFICAÇÃO DE PRODUTOS E USUÁRIOS:
+IMPORTANTE: Analise cuidadosamente o conteúdo fornecido (texto ou áudio transcrito) para identificar se há menções a produtos ou usuários da empresa.
+
+PRODUTOS DISPONÍVEIS:
+{{productsList}}
+
+USUÁRIOS DISPONÍVEIS:
+{{usersList}}
+
+REGRAS PARA IDENTIFICAÇÃO:
+1. Produto: Cada report é específico para UM ÚNICO produto. Identifique qual produto está sendo mencionado no conteúdo. Considere variações de nomes, abreviações e referências indiretas (ex: "softcomshop" pode referir-se a "SOFTCOMSHOP", "Softcomshop", etc.). Retorne APENAS o ID do produto mais relevante mencionado. Se não houver menção clara a um produto, retorne null.
+2. Usuários: Identifique se há menções a usuários por nome de suporte, nome do Discord (com @ ou sem), ou referências indiretas. Pode haver múltiplos usuários mencionados. Retorne um array com os IDs dos usuários identificados. Se não houver menção a usuários, retorne array vazio [].
+3. Seja criterioso: só inclua IDs se tiver certeza de que foram mencionados no conteúdo.
+
 ### REGRAS OBRIGATÓRIAS PARA O CAMPO "description" quando a categoria for BUG (ESTILO DO EXEMPLO):
 - A descrição DEVE ser escrita sempre neste formato e nesta ordem, com os mesmos rótulos:
-  
+
 Comportamento atual:
 
 <texto>
@@ -91,26 +113,9 @@ Critérios de aceitação:
 - "Critérios de aceitação" deve ser uma lista numerada com "1.", "2.", "3." (igual ao exemplo).
 - Os critérios devem começar com verbos no infinitivo (ex.: Permitir, Impedir, Validar, Registrar, Notificar).
 - Se algum bloco não se aplicar ou não houver informação suficiente, preencha com "Não informado".
-- Não crie novas seções além das acima. Caso existam dependências, impactos ou observações, inclua-as no final de "Descrição do requisito" ou "Regras de negócio".`;
+- Não crie novas seções além das acima. Caso existam dependências, impactos ou observações, inclua-as no final de "Descrição do requisito" ou "Regras de negócio".
 
-/** Bloco fixo: identificação de produtos e usuários (injetado em runtime). */
-export const FIXED_IDENTIFICATION_BLOCK = `
-### IDENTIFICAÇÃO DE PRODUTOS E USUÁRIOS:
-IMPORTANTE: Analise cuidadosamente o conteúdo fornecido (texto ou áudio transcrito) para identificar se há menções a produtos ou usuários da empresa.
 
-PRODUTOS DISPONÍVEIS:
-{{productsList}}
-
-USUÁRIOS DISPONÍVEIS:
-{{usersList}}
-
-REGRAS PARA IDENTIFICAÇÃO:
-1. Produto: Cada report é específico para UM ÚNICO produto. Identifique qual produto está sendo mencionado no conteúdo. Considere variações de nomes, abreviações e referências indiretas (ex: "softcomshop" pode referir-se a "SOFTCOMSHOP", "Softcomshop", etc.). Retorne APENAS o ID do produto mais relevante mencionado. Se não houver menção clara a um produto, retorne null.
-2. Usuários: Identifique se há menções a usuários por nome de suporte, nome do Discord (com @ ou sem), ou referências indiretas. Pode haver múltiplos usuários mencionados. Retorne um array com os IDs dos usuários identificados. Se não houver menção a usuários, retorne array vazio [].
-3. Seja criterioso: só inclua IDs se tiver certeza de que foram mencionados no conteúdo.`;
-
-/** Bloco fixo: contrato JSON de saída (não editável pelo Squad). */
-export const FIXED_JSON_CONTRACT_BLOCK = `
 ### CAMPOS PARA EXTRAÇÃO (JSON):
 
 1. title: Título/resumo conciso seguindo o formato "Produto > Caminho: Descrição" (máximo 100 caracteres).
@@ -136,73 +141,6 @@ Formato JSON esperado:
   "additionalInformation": "string",
   "productId": "string" | null,
   "userIds": ["string"] | []
-}`;
-
-function formatProductsList(products: Product[]): string {
-  return products
-    .map(
-      (p) =>
-        `- ID: ${p.id}, Nome: ${p.nome_projeto}${p.setor ? `, Setor: ${p.setor}` : ""}`,
-    )
-    .join("\n");
-}
-
-function formatUsersList(users: User[]): string {
-  return users
-    .map(
-      (u) =>
-        `- ID: ${u.id}, Nome: ${u.nome_suporte}${u.setor ? `, Setor: ${u.setor}` : ""}${u.usuario_discord ? `, Discord: @${u.usuario_discord}` : ""}`,
-    )
-    .join("\n");
-}
-
-function injectDynamicLists(
-  block: string,
-  products: Product[],
-  users: User[],
-): string {
-  return block
-    .replace("{{productsList}}", formatProductsList(products))
-    .replace("{{usersList}}", formatUsersList(users));
-}
-
-function normalizeEditableTemplate(template: string): string {
-  let normalized = template.trim();
-
-  // Compatibilidade: registros antigos podem conter blocos fixos no template salvo.
-  const identificationMarker = "### IDENTIFICAÇÃO DE PRODUTOS E USUÁRIOS:";
-  const jsonMarker = "### CAMPOS PARA EXTRAÇÃO (JSON):";
-
-  const identificationIndex = normalized.indexOf(identificationMarker);
-  if (identificationIndex !== -1) {
-    normalized = normalized.slice(0, identificationIndex).trim();
-  }
-
-  const jsonIndex = normalized.indexOf(jsonMarker);
-  if (jsonIndex !== -1) {
-    normalized = normalized.slice(0, jsonIndex).trim();
-  }
-
-  return normalized;
-}
-
-/**
- * Monta o prompt completo a partir da parte editável + blocos fixos do sistema.
- * @param editableTemplate Conteúdo cadastrado pelo Squad (ou DEFAULT) — apenas regras editáveis.
- */
-export function buildFormAssistantPrompt(
-  editableTemplate: string,
-  products: Product[],
-  users: User[],
-): string {
-  const editable = normalizeEditableTemplate(editableTemplate);
-  const identification = injectDynamicLists(
-    FIXED_IDENTIFICATION_BLOCK,
-    products,
-    users,
-  );
-
-  return [editable, identification.trim(), FIXED_JSON_CONTRACT_BLOCK.trim()].join(
-    "\n\n",
-  );
-}
+}'
+)
+ON CONFLICT (squad_setor) DO NOTHING;

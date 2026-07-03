@@ -1,0 +1,3 @@
+-- Migration: template passa a armazenar apenas a parte editável pelo Squad.
+-- Blocos fixos (identificação produto/usuário + contrato JSON) são montados em runtime.
+-- O conteúdo editável padrão é aplicado via script (ver scripts/migrate-editable-prompt.ts).

@@ -10,6 +10,7 @@ import { healthRoutes } from "./routes/health.js";
 import { assistantRoutes } from "./routes/assistant.js";
 import { reportAnalysisRoutes } from "./routes/report-analysis.js";
 import { productionAnalysisRoutes } from "./routes/production-analysis.js";
+import { formAssistantPromptsRoutes } from "./routes/form-assistant-prompts.js";
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -25,6 +26,12 @@ async function buildServer() {
   const fastify = Fastify({
     logger: {
       level: "info",
+    },
+    // Permite keywords do OpenAPI (example, description) nos schemas de request
+    ajv: {
+      customOptions: {
+        strict: false,
+      },
     },
   });
 
@@ -76,6 +83,11 @@ async function buildServer() {
           name: "health",
           description: "Verificação de saúde e status da API",
         },
+        {
+          name: "form-assistant-prompts",
+          description:
+            "Gerenciamento de prompts do assistente de IA por Squad. Permite cadastrar, editar, ativar/desativar e remover prompts específicos por Squad.",
+        },
       ],
     },
   });
@@ -123,6 +135,7 @@ async function buildServer() {
   await fastify.register(assistantRoutes);
   await fastify.register(reportAnalysisRoutes);
   await fastify.register(productionAnalysisRoutes);
+  await fastify.register(formAssistantPromptsRoutes);
 
   // Tratamento global de erros
   fastify.setErrorHandler((error, request, reply) => {

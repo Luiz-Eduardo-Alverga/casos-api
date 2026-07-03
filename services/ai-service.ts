@@ -10,6 +10,7 @@ import {
   ReportAnalysisResponse,
 } from "../types/assistant.js";
 import { buildFormAssistantPrompt } from "../prompts/form-assistant.js";
+import { promptRepository } from "./prompt-repository.js";
 import { REPORT_ANALYSIS_PROMPT } from "../prompts/report-analysis.js";
 import { softFlowClient } from "./softflow-client.js";
 
@@ -248,7 +249,8 @@ export class AIService {
         }
       }
 
-      const prompt = buildFormAssistantPrompt(this.products, this.users);
+      const template = await promptRepository.resolve(request.squadSetor);
+      const prompt = buildFormAssistantPrompt(template, this.products, this.users);
       const contentParts: ChatContentPart[] = [{ type: "text", text: prompt }];
 
       if (hasDescription) {

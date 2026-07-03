@@ -13,6 +13,9 @@ export const assistantRequestSchema = {
       type: 'string',
       format: 'binary', // Para Swagger UI mostrar upload de arquivo
     },
+    squadSetor: {
+      type: 'string',
+    },
   },
   // Não requer description obrigatória, mas pelo menos um deve ser fornecido
 };
@@ -30,6 +33,12 @@ export const assistantRequestSchemaDocs = {
       type: 'string',
       format: 'binary',
       description: 'Arquivo de áudio com descrição do bug/melhoria/requisito (opcional se description for fornecido). Formatos suportados: MP3, WAV, M4A, etc.',
+    },
+    squadSetor: {
+      type: 'string',
+      description:
+        'Setor do usuário logado (ex: "SQUAD BACKOFFICE"). Usado para resolver o prompt correto: squads com prompt próprio ativo usam o deles; demais setores usam o prompt DEFAULT. Recomendado enviar sempre.',
+      example: 'SQUAD BACKOFFICE',
     },
   },
 };

@@ -6,6 +6,8 @@ export interface AssistantRequest {
   description?: string;
   audio?: Buffer; // Buffer do arquivo de áudio
   audioMimeType?: string; // Tipo MIME do áudio (ex: 'audio/mpeg', 'audio/wav')
+  /** Setor do usuário (ex: "SQUAD BACKOFFICE"). Usado para resolver o prompt correto. */
+  squadSetor?: string;
 }
 
 export interface ReportAnalysisRequest extends AssistantRequest {
