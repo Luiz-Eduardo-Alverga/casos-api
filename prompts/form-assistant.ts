@@ -105,15 +105,17 @@ USUÁRIOS DISPONÍVEIS:
 {{usersList}}
 
 REGRAS PARA IDENTIFICAÇÃO:
-1. Produto: Cada report é específico para UM ÚNICO produto. Identifique qual produto está sendo mencionado no conteúdo. Considere variações de nomes, abreviações e referências indiretas (ex: "softcomshop" pode referir-se a "SOFTCOMSHOP", "Softcomshop", etc.). Retorne APENAS o ID do produto mais relevante mencionado. Se não houver menção clara a um produto, retorne null.
-2. Usuários: Identifique se há menções a usuários por nome de suporte, nome do Discord (com @ ou sem), ou referências indiretas. Pode haver múltiplos usuários mencionados. Retorne um array com os IDs dos usuários identificados. Se não houver menção a usuários, retorne array vazio [].
-3. Seja criterioso: só inclua IDs se tiver certeza de que foram mencionados no conteúdo.`;
+1. Produto: Cada report é específico para UM ÚNICO produto. Identifique qual produto está sendo mencionado EXPLICITAMENTE no conteúdo. Considere apenas variações de nomes e abreviações diretas (ex: "softcomshop" → "SOFTCOMSHOP"). NÃO infira produto por similaridade de marca ou ecossistema (ex: "Smart" NÃO significa SOFTCOMSHOP; "Smart" refere-se ao produto "Smart (Softcom Smart)").
+2. Quando o texto mencionar um nome de produto (ex: "No Smart", "no Softcomshop", "no PDV"), trate esse nome como PRODUTO — não como caminho de tela. O caminho de tela vem depois (ex: "cadastro de clientes", "tela de vendas").
+3. O nome do produto no campo title (parte antes de ">") DEVE corresponder exatamente ao productId retornado.
+4. Usuários: Identifique se há menções a usuários por nome de suporte, nome do Discord (com @ ou sem), ou referências indiretas. Pode haver múltiplos usuários mencionados. Retorne um array com os IDs dos usuários identificados. Se não houver menção a usuários, retorne array vazio [].
+5. Seja criterioso: só inclua productId se o nome do produto (ou alias direto) aparecer no conteúdo. Se não houver menção explícita, retorne null.`;
 
 /** Bloco fixo: contrato JSON de saída (não editável pelo Squad). */
 export const FIXED_JSON_CONTRACT_BLOCK = `
 ### CAMPOS PARA EXTRAÇÃO (JSON):
 
-1. title: Título/resumo conciso seguindo o formato "Produto > Caminho: Descrição" (máximo 100 caracteres).
+1. title: Título/resumo conciso seguindo o formato "Produto > Caminho: Descrição" (máximo 100 caracteres). O "Produto" deve ser o nome exato do produto identificado no productId, não um produto diferente inferido.
 2. category: Deve ser exatamente uma das opções: "BUG", "MELHORIA" ou "REQUISITO".
 3. description: Texto obrigatório no formato especificado acima.
 4. additionalInformation: Informações adicionais relevantes, links de evidências e referências de conversas (inclua aqui também quaisquer URLs de Discord/vídeo/prints que não caibam bem na descrição).
@@ -126,7 +128,8 @@ export const FIXED_JSON_CONTRACT_BLOCK = `
 - Se informações essenciais faltarem e não puderem ser inferidas com confiança, use "Não informado".
 - Não invente Produto, Caminho em tela, passos, comportamento esperado ou qualquer detalhe que não esteja explícito.
 - Caso não possua informações adicionais, retorne apenas uma string vazia no campo "additionalInformation".
-- Para productId e userIds, seja criterioso: só inclua IDs se tiver certeza de que foram mencionados no conteúdo.
+- Para productId, só inclua se o nome do produto aparecer explicitamente no conteúdo. Não associe produtos por inferência de marca.
+- Para userIds, seja criterioso: só inclua IDs se tiver certeza de que foram mencionados no conteúdo.
 
 Formato JSON esperado:
 {

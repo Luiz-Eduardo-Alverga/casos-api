@@ -11,6 +11,10 @@ import {
 } from "../types/assistant.js";
 import { buildFormAssistantPrompt } from "../prompts/form-assistant.js";
 import { promptRepository } from "./prompt-repository.js";
+import {
+  fixTitleProductPrefix,
+  resolveProductMatch,
+} from "./product-matcher.js";
 import { REPORT_ANALYSIS_PROMPT } from "../prompts/report-analysis.js";
 import { softFlowClient } from "./softflow-client.js";
 
@@ -338,18 +342,29 @@ export class AIService {
           | "REQUISITO";
       }
 
-      const matchedProduct = this.mapProductId(parsedData.productId);
+      const aiProduct = this.mapProductId(parsedData.productId);
       const matchedUsers = this.mapUserIds(parsedData.userIds);
+      const contentForMatching = request.description?.trim() ?? "";
+      const resolvedProduct = resolveProductMatch(
+        contentForMatching,
+        aiProduct,
+        this.products,
+      );
+
+      let title = parsedData.title;
+      if (resolvedProduct) {
+        title = fixTitleProductPrefix(title, resolvedProduct);
+      }
 
       const finalData: AssistantData = {
-        title: parsedData.title,
+        title,
         description: parsedData.description,
         category: parsedData.category,
         additionalInformation: parsedData.additionalInformation,
       };
 
-      if (matchedProduct) {
-        finalData.product = matchedProduct;
+      if (resolvedProduct) {
+        finalData.product = resolvedProduct;
       }
 
       if (matchedUsers.length > 0) {

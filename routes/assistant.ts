@@ -1,21 +1,21 @@
-import { FastifyInstance } from 'fastify';
-import { AIService } from '../services/ai-service.js';
-import { AssistantRequest } from '../types/assistant.js';
-import { assistantRouteSchema } from '../docs/routes/assistant.js';
-import { assistantRequestSchema } from '../docs/schemas/assistant.js';
+import { FastifyInstance } from "fastify";
+import { AIService } from "../services/ai-service.js";
+import { AssistantRequest } from "../types/assistant.js";
+import { assistantRouteSchema } from "../docs/routes/assistant.js";
+import { assistantRequestSchema } from "../docs/schemas/assistant.js";
 
 /**
  * Rota principal do assistente de IA
  */
 export async function assistantRoutes(fastify: FastifyInstance) {
   fastify.post<{ Body: AssistantRequest }>(
-    '/api/assistant',
+    "/api/assistant",
     {
       schema: {
         tags: assistantRouteSchema.tags,
         summary: assistantRouteSchema.summary,
         description: assistantRouteSchema.description,
-        consumes: ['multipart/form-data', 'application/json'], // Aceitar ambos
+        consumes: ["multipart/form-data", "application/json"], // Aceitar ambos
         // Body schema removido da validação automática para permitir multipart
         // Será validado manualmente apenas para JSON
         response: assistantRouteSchema.response, // Schema de documentação (com example)
@@ -29,7 +29,7 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         if (request.validationError && !request.isMultipart()) {
           return reply.code(400).send({
             success: false,
-            error: request.validationError.message || 'Erro de validação',
+            error: request.validationError.message || "Erro de validação",
           });
         }
 
@@ -39,7 +39,8 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         if (!aiService) {
           return reply.code(503).send({
             success: false,
-            error: 'Serviço de IA não está disponível. Verifique a configuração da OPENAI_API_KEY.',
+            error:
+              "Serviço de IA não está disponível. Verifique a configuração da OPENAI_API_KEY.",
           });
         }
 
@@ -52,20 +53,20 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         if (request.isMultipart()) {
           // Processar todos os campos e arquivos do multipart
           const parts = request.parts();
-          
+
           for await (const part of parts) {
-            if (part.type === 'file') {
+            if (part.type === "file") {
               // É um arquivo (áudio)
-              if (part.fieldname === 'audio') {
+              if (part.fieldname === "audio") {
                 const buffer = await part.toBuffer();
                 audio = buffer;
-                audioMimeType = part.mimetype || 'audio/mpeg';
+                audioMimeType = part.mimetype || "audio/mpeg";
               }
             } else {
               // É um campo de texto
-              if (part.fieldname === 'description') {
+              if (part.fieldname === "description") {
                 description = part.value as string;
-              } else if (part.fieldname === 'squadSetor') {
+              } else if (part.fieldname === "squadSetor") {
                 squadSetor = part.value as string;
               }
             }
@@ -73,15 +74,15 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         } else {
           // Se for JSON, validar e usar o body diretamente
           const body = request.body as AssistantRequest;
-          
+
           // Validação manual para JSON
-          if (!body || typeof body !== 'object') {
+          if (!body || typeof body !== "object") {
             return reply.code(400).send({
               success: false,
-              error: 'Body deve ser um objeto JSON válido',
+              error: "Body deve ser um objeto JSON válido",
             });
           }
-          
+
           description = body.description;
           squadSetor = body.squadSetor;
         }
@@ -93,13 +94,14 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         if (!hasDescription && !hasAudio) {
           return reply.code(400).send({
             success: false,
-            error: 'É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio',
+            error:
+              "É necessário fornecer pelo menos uma descrição (texto) ou um arquivo de áudio",
           });
         }
 
-        const result = await aiService.processReport({ 
-          description, 
-          audio, 
+        const result = await aiService.processReport({
+          description,
+          audio,
           audioMimeType,
           squadSetor,
         });
@@ -107,24 +109,25 @@ export async function assistantRoutes(fastify: FastifyInstance) {
         if (!result.success) {
           // Retornar 422 (Unprocessable Entity) para conteúdo inválido/insuficiente
           // ou 400 (Bad Request) para outros erros de validação
-          const statusCode = result.error?.includes('insuficiente') || 
-                            result.error?.includes('muito curto') || 
-                            result.error?.includes('não contém informações') ||
-                            result.error?.includes('não foi possível identificar')
-            ? 422 
-            : 400;
-          
+          const statusCode =
+            result.error?.includes("insuficiente") ||
+            result.error?.includes("muito curto") ||
+            result.error?.includes("não contém informações") ||
+            result.error?.includes("não foi possível identificar")
+              ? 422
+              : 400;
+
           return reply.code(statusCode).send(result);
         }
 
         return reply.code(200).send(result);
       } catch (error: any) {
-        fastify.log.error(error, 'Erro ao processar relatório');
+        fastify.log.error(error, "Erro ao processar relatório");
         return reply.code(500).send({
           success: false,
-          error: error.message || 'Erro interno do servidor',
+          error: error.message || "Erro interno do servidor",
         });
       }
-    }
+    },
   );
 }
