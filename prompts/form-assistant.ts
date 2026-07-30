@@ -39,7 +39,7 @@ Passos para reproduzir:
 
 - "Passos para reproduzir" deve ser uma lista numerada com "1.", "2.", "3." (igual ao exemplo).
 - Os passos devem começar com verbos no infinitivo (ex.: Acessar, Clicar, Preencher, Selecionar).
-- Se algum dos blocos não se aplicar (ex.: não há passos claros), preencha com "Não informado".
+- Se algum dos blocos não se aplicar (ex.: não há passos claros), omita completamente a seção (rótulo e conteúdo). Nunca use "Não informado", "N/A" ou placeholders.
 - NÃO use o padrão "1 -", "1.1 -" ou bullets na descrição. O único formato de lista permitido na descrição é a lista numerada dos passos (1., 2., 3.).
 - Se houver "Contexto adicional relevante", inclua-o no final do texto de "Comportamento atual" ou "Comportamento esperado" (conforme fizer mais sentido), sem criar novas seções.
 
@@ -65,7 +65,7 @@ Critérios de aceitação:
 
 - "Critérios de aceitação" deve ser uma lista numerada com "1.", "2.", "3." (igual ao exemplo).
 - Os critérios devem começar com verbos no infinitivo (ex.: Exibir, Permitir, Bloquear, Validar, Registrar).
-- Se algum bloco não se aplicar ou não houver informação suficiente, preencha com "Não informado".
+- Se algum bloco não se aplicar ou não houver informação suficiente, omita completamente a seção (rótulo e conteúdo). Nunca use "Não informado", "N/A" ou placeholders.
 - Não crie novas seções além das acima. Caso exista contexto adicional relevante, inclua-o no final de "Contexto/Problema" ou "Melhoria proposta".
 
 ### REGRAS OBRIGATÓRIAS PARA O CAMPO "description" quando a categoria for REQUISITO:
@@ -90,7 +90,7 @@ Critérios de aceitação:
 
 - "Critérios de aceitação" deve ser uma lista numerada com "1.", "2.", "3." (igual ao exemplo).
 - Os critérios devem começar com verbos no infinitivo (ex.: Permitir, Impedir, Validar, Registrar, Notificar).
-- Se algum bloco não se aplicar ou não houver informação suficiente, preencha com "Não informado".
+- Se algum bloco não se aplicar ou não houver informação suficiente, omita completamente a seção (rótulo e conteúdo). Nunca use "Não informado", "N/A" ou placeholders.
 - Não crie novas seções além das acima. Caso existam dependências, impactos ou observações, inclua-as no final de "Descrição do requisito" ou "Regras de negócio".`;
 
 /** Bloco fixo: identificação de produtos e usuários (injetado em runtime). */
@@ -125,7 +125,7 @@ export const FIXED_JSON_CONTRACT_BLOCK = `
 ### IMPORTANTE:
 - Use português brasileiro em todas as respostas.
 - Retorne APENAS um JSON válido, sem texto adicional antes ou depois.
-- Se informações essenciais faltarem e não puderem ser inferidas com confiança, use "Não informado".
+- Se um bloco da description não tiver informação suficiente, omita a seção inteira (rótulo e conteúdo). Nunca use "Não informado", "N/A" ou placeholders em nenhum campo.
 - Não invente Produto, Caminho em tela, passos, comportamento esperado ou qualquer detalhe que não esteja explícito.
 - Caso não possua informações adicionais, retorne apenas uma string vazia no campo "additionalInformation".
 - Para productId, só inclua se o nome do produto aparecer explicitamente no conteúdo. Não associe produtos por inferência de marca.

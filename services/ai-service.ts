@@ -15,6 +15,7 @@ import {
   fixTitleProductPrefix,
   resolveProductMatch,
 } from "./product-matcher.js";
+import { sanitizeDescription } from "./description-sanitizer.js";
 import { REPORT_ANALYSIS_PROMPT } from "../prompts/report-analysis.js";
 import { softFlowClient } from "./softflow-client.js";
 
@@ -277,7 +278,7 @@ export class AIService {
         if (!hasDescription) {
           contentParts.push({
             type: "text",
-            text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e processe as informações conforme o prompt acima. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, você DEVE retornar um JSON com todos os campos preenchidos com "Não informado" e a categoria como "BUG". Não invente informações se o áudio não contiver conteúdo útil.',
+            text: '\n\nIMPORTANTE: Transcreva o áudio fornecido e processe as informações conforme o prompt acima. Analise o áudio transcrito para identificar o produto e usuários mencionados. Se o áudio estiver vazio, sem fala, ou contiver apenas ruído/silêncio, retorne apenas os campos que puderem ser preenchidos com conteúdo real — omita seções sem informação. Não invente informações se o áudio não contiver conteúdo útil.',
           });
         } else {
           contentParts.push({
@@ -332,6 +333,16 @@ export class AIService {
         };
       }
 
+      const sanitizedDescription = sanitizeDescription(parsedData.description);
+
+      if (!sanitizedDescription) {
+        return {
+          success: false,
+          error:
+            "O conteúdo fornecido não contém informações suficientes sobre um bug, melhoria ou requisito. Por favor, forneça uma descrição mais detalhada.",
+        };
+      }
+
       const categoriaUpper = parsedData.category.toUpperCase();
       if (!["BUG", "MELHORIA", "REQUISITO"].includes(categoriaUpper)) {
         parsedData.category = "BUG";
@@ -358,7 +369,7 @@ export class AIService {
 
       const finalData: AssistantData = {
         title,
-        description: parsedData.description,
+        description: sanitizedDescription,
         category: parsedData.category,
         additionalInformation: parsedData.additionalInformation,
       };
