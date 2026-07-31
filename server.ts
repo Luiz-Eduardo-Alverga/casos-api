@@ -11,6 +11,7 @@ import { assistantRoutes } from "./routes/assistant.js";
 import { reportAnalysisRoutes } from "./routes/report-analysis.js";
 import { productionAnalysisRoutes } from "./routes/production-analysis.js";
 import { formAssistantPromptsRoutes } from "./routes/form-assistant-prompts.js";
+import { releaseNotesRoutes } from "./routes/release-notes.js";
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -80,6 +81,11 @@ async function buildServer() {
             "Auditoria de produção diária dos colaboradores do squad",
         },
         {
+          name: "release-notes",
+          description:
+            "Geração do Registro de Liberação via IA a partir dos itens de uma liberação no SoftFlow",
+        },
+        {
           name: "health",
           description: "Verificação de saúde e status da API",
         },
@@ -136,6 +142,7 @@ async function buildServer() {
   await fastify.register(reportAnalysisRoutes);
   await fastify.register(productionAnalysisRoutes);
   await fastify.register(formAssistantPromptsRoutes);
+  await fastify.register(releaseNotesRoutes);
 
   // Tratamento global de erros
   fastify.setErrorHandler((error, request, reply) => {

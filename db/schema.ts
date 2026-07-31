@@ -182,11 +182,18 @@ export const userCasesFiltersPreferences = pgTable(
   },
 );
 
-/** Prompt do assistente de IA para abertura de caso, configurável por Squad. */
+/**
+ * Prompt de IA cadastrável em banco, compartilhado entre múltiplos recursos.
+ * O campo `tipo` diferencia o uso: "FORM_ASSISTANT" (abertura de caso, 1 prompt
+ * por squad) ou "RELEASE_NOTES" (Registro de Liberação, N prompts por squad —
+ * a seleção de qual usar é feita pelo cliente via promptId).
+ */
 export const formAssistantPrompts = pgTable("form_assistant_prompts", {
   id: uuid("id").primaryKey().defaultRandom(),
   /** null = prompt DEFAULT global; preenchido = exclusivo do squad */
-  squadSetor: text("squad_setor").unique(),
+  squadSetor: text("squad_setor"),
+  /** "FORM_ASSISTANT" (default) | "RELEASE_NOTES". Unicidade por squad só é aplicada a FORM_ASSISTANT (ver migration 003). */
+  tipo: text("tipo").notNull().default("FORM_ASSISTANT"),
   name: text("name").notNull(),
   isActive: boolean("is_active").notNull().default(true),
   template: text("template").notNull(),

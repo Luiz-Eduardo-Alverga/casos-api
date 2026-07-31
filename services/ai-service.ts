@@ -181,6 +181,22 @@ export class AIService {
     });
   }
 
+  /**
+   * Gera resposta em texto livre (não-JSON) a partir de um prompt.
+   * Usado por serviços externos à classe (ex.: ReleaseNotesService) que precisam
+   * de saída em Markdown/texto corrido em vez de um objeto JSON estruturado.
+   */
+  async generateText(
+    prompt: string,
+    config?: Partial<GenerationOptions>,
+  ): Promise<string> {
+    return this.chat({
+      messages: [{ role: "user", content: prompt }],
+      temperature: config?.temperature ?? this.generationConfig.temperature,
+      maxTokens: config?.maxTokens ?? this.generationConfig.maxTokens,
+    });
+  }
+
   private validateContent(content: string): {
     isValid: boolean;
     error?: string;

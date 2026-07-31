@@ -4,15 +4,19 @@ import type {
   FormAssistantPrompt,
   CreatePromptBody,
   UpdatePromptBody,
+  PromptType,
 } from "../types/form-assistant-prompts.js";
 
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutos
+
+const DEFAULT_TIPO: PromptType = "FORM_ASSISTANT";
 
 /** Mapeamento de row do banco para o tipo FormAssistantPrompt */
 function rowToModel(row: Record<string, unknown>): FormAssistantPrompt {
   return {
     id: row.id as string,
     squadSetor: row.squad_setor as string | null,
+    tipo: row.tipo as PromptType,
     name: row.name as string,
     isActive: row.is_active as boolean,
     template: row.template as string,
@@ -44,9 +48,9 @@ export class PromptRepository {
     if (this.isCacheValid()) return this.cache!;
 
     const rows = await sql<Record<string, unknown>[]>`
-      SELECT id, squad_setor, name, is_active, template, created_by, updated_by, created_at, updated_at
+      SELECT id, squad_setor, tipo, name, is_active, template, created_by, updated_by, created_at, updated_at
       FROM form_assistant_prompts
-      ORDER BY squad_setor NULLS FIRST
+      ORDER BY squad_setor NULLS FIRST, created_at ASC
     `;
 
     this.cache = rows.map(rowToModel);
@@ -54,8 +58,9 @@ export class PromptRepository {
     return this.cache;
   }
 
-  async findAll(): Promise<FormAssistantPrompt[]> {
-    return this.loadAll();
+  async findAll(tipo?: PromptType): Promise<FormAssistantPrompt[]> {
+    const all = await this.loadAll();
+    return tipo ? all.filter((p) => p.tipo === tipo) : all;
   }
 
   async findById(id: string): Promise<FormAssistantPrompt | null> {
@@ -63,18 +68,55 @@ export class PromptRepository {
     return all.find((p) => p.id === id) ?? null;
   }
 
-  async findDefault(): Promise<FormAssistantPrompt | null> {
-    const all = await this.loadAll();
-    return all.find((p) => p.squadSetor === null && p.isActive) ?? null;
+  /**
+   * Busca um prompt por id garantindo que ele pertence ao tipo esperado.
+   * Usado para validar um `promptId` informado explicitamente pelo cliente
+   * (ex.: seleção de um prompt de RELEASE_NOTES entre vários do mesmo squad).
+   */
+  async findByIdAndType(
+    id: string,
+    tipo: PromptType,
+  ): Promise<FormAssistantPrompt | null> {
+    const prompt = await this.findById(id);
+    return prompt && prompt.tipo === tipo ? prompt : null;
   }
 
-  async findBySquad(setor: string): Promise<FormAssistantPrompt | null> {
+  async findDefault(
+    tipo: PromptType = DEFAULT_TIPO,
+  ): Promise<FormAssistantPrompt | null> {
     const all = await this.loadAll();
-    return all.find((p) => p.squadSetor === setor && p.isActive) ?? null;
+    return (
+      all.find((p) => p.squadSetor === null && p.tipo === tipo && p.isActive) ??
+      null
+    );
+  }
+
+  async findBySquad(
+    setor: string,
+    tipo: PromptType = DEFAULT_TIPO,
+  ): Promise<FormAssistantPrompt | null> {
+    const all = await this.loadAll();
+    return (
+      all.find((p) => p.squadSetor === setor && p.tipo === tipo && p.isActive) ??
+      null
+    );
   }
 
   /**
-   * Resolve o template editável correto para o setor informado:
+   * Lista TODOS os prompts (ativos ou não) de um squad para um tipo — usado
+   * quando o tipo permite múltiplos prompts por squad (ex.: RELEASE_NOTES),
+   * para o cliente montar um seletor e escolher qual usar via promptId.
+   */
+  async findAllBySquad(
+    setor: string,
+    tipo: PromptType,
+  ): Promise<FormAssistantPrompt[]> {
+    const all = await this.loadAll();
+    return all.filter((p) => p.squadSetor === setor && p.tipo === tipo);
+  }
+
+  /**
+   * Resolve o template editável correto para o setor informado (tipo FORM_ASSISTANT):
    * 1. Se setor começa com "SQUAD" e existe prompt ativo para ele → usa o do squad
    * 2. Caso contrário → usa o DEFAULT (squad_setor IS NULL)
    * 3. Se o banco estiver vazio → usa fallback hardcoded
@@ -94,10 +136,11 @@ export class PromptRepository {
   }
 
   async create(data: CreatePromptBody): Promise<FormAssistantPrompt> {
+    const tipo = data.tipo ?? DEFAULT_TIPO;
     const rows = await sql<Record<string, unknown>[]>`
-      INSERT INTO form_assistant_prompts (squad_setor, name, template)
-      VALUES (${data.squadSetor}, ${data.name}, ${data.template})
-      RETURNING id, squad_setor, name, is_active, template, created_by, updated_by, created_at, updated_at
+      INSERT INTO form_assistant_prompts (squad_setor, tipo, name, template)
+      VALUES (${data.squadSetor ?? null}, ${tipo}, ${data.name}, ${data.template})
+      RETURNING id, squad_setor, tipo, name, is_active, template, created_by, updated_by, created_at, updated_at
     `;
     this.invalidateCache();
     return rowToModel(rows[0]);
@@ -123,7 +166,7 @@ export class PromptRepository {
           updated_by = ${newUpdatedBy},
           updated_at = now()
       WHERE id = ${id}
-      RETURNING id, squad_setor, name, is_active, template, created_by, updated_by, created_at, updated_at
+      RETURNING id, squad_setor, tipo, name, is_active, template, created_by, updated_by, created_at, updated_at
     `;
 
     if (rows.length === 0) return null;
@@ -136,7 +179,7 @@ export class PromptRepository {
       UPDATE form_assistant_prompts
       SET is_active = NOT is_active, updated_at = now()
       WHERE id = ${id}
-      RETURNING id, squad_setor, name, is_active, template, created_by, updated_by, created_at, updated_at
+      RETURNING id, squad_setor, tipo, name, is_active, template, created_by, updated_by, created_at, updated_at
     `;
     if (rows.length === 0) return null;
     this.invalidateCache();

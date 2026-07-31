@@ -1,6 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { promptRepository } from "../services/prompt-repository.js";
-import type { CreatePromptBody, UpdatePromptBody } from "../types/form-assistant-prompts.js";
+import type {
+  CreatePromptBody,
+  UpdatePromptBody,
+  PromptType,
+} from "../types/form-assistant-prompts.js";
 import {
   listPromptsRouteSchema,
   getDefaultPromptRouteSchema,
@@ -11,17 +15,43 @@ import {
   deletePromptRouteSchema,
 } from "../docs/routes/form-assistant-prompts.js";
 
+const VALID_TIPOS: PromptType[] = ["FORM_ASSISTANT", "RELEASE_NOTES"];
+const DEFAULT_TIPO: PromptType = "FORM_ASSISTANT";
+
+function isValidTipo(value: string): value is PromptType {
+  return (VALID_TIPOS as string[]).includes(value);
+}
+
 /**
- * Rotas de gerenciamento de prompts do assistente de IA por Squad.
+ * Rotas de gerenciamento de prompts de IA cadastráveis em banco (por tipo).
+ *
+ * tipo "FORM_ASSISTANT": abertura de caso, 1 prompt por squad (comportamento original).
+ * tipo "RELEASE_NOTES": Registro de Liberação, N prompts por squad — squadSetor é
+ * opcional e não há checagem de conflito, pois o cliente escolhe qual usar via promptId.
  */
 export async function formAssistantPromptsRoutes(fastify: FastifyInstance) {
-  // GET /api/form-assistant-prompts — lista todos
-  fastify.get(
+  // GET /api/form-assistant-prompts — lista prompts (filtra por tipo e, opcionalmente, squadSetor)
+  fastify.get<{ Querystring: { tipo?: string; squadSetor?: string } }>(
     "/api/form-assistant-prompts",
     { schema: listPromptsRouteSchema },
-    async (_request, reply) => {
+    async (request, reply) => {
       try {
-        const data = await promptRepository.findAll();
+        const { tipo: tipoParam, squadSetor } = request.query;
+
+        if (tipoParam && !isValidTipo(tipoParam)) {
+          return reply.code(400).send({
+            success: false,
+            error: `Tipo inválido. Use um dos valores: ${VALID_TIPOS.join(", ")}.`,
+          });
+        }
+
+        const tipo = (tipoParam as PromptType) ?? DEFAULT_TIPO;
+        let data = await promptRepository.findAll(tipo);
+
+        if (squadSetor) {
+          data = data.filter((p) => p.squadSetor === squadSetor);
+        }
+
         return reply.code(200).send({ success: true, data });
       } catch (error: any) {
         fastify.log.error(error, "Erro ao listar prompts");
@@ -30,13 +60,23 @@ export async function formAssistantPromptsRoutes(fastify: FastifyInstance) {
     },
   );
 
-  // GET /api/form-assistant-prompts/default — retorna o prompt DEFAULT
-  fastify.get(
+  // GET /api/form-assistant-prompts/default — retorna o prompt DEFAULT do tipo informado
+  fastify.get<{ Querystring: { tipo?: string } }>(
     "/api/form-assistant-prompts/default",
     { schema: getDefaultPromptRouteSchema },
-    async (_request, reply) => {
+    async (request, reply) => {
       try {
-        const data = await promptRepository.findDefault();
+        const { tipo: tipoParam } = request.query;
+
+        if (tipoParam && !isValidTipo(tipoParam)) {
+          return reply.code(400).send({
+            success: false,
+            error: `Tipo inválido. Use um dos valores: ${VALID_TIPOS.join(", ")}.`,
+          });
+        }
+
+        const tipo = (tipoParam as PromptType) ?? DEFAULT_TIPO;
+        const data = await promptRepository.findDefault(tipo);
         if (!data) {
           return reply.code(404).send({
             success: false,
@@ -51,7 +91,7 @@ export async function formAssistantPromptsRoutes(fastify: FastifyInstance) {
     },
   );
 
-  // GET /api/form-assistant-prompts/squad/:setor — retorna prompt resolvido do squad
+  // GET /api/form-assistant-prompts/squad/:setor — retorna prompt resolvido do squad (tipo FORM_ASSISTANT)
   fastify.get<{ Params: { setor: string } }>(
     "/api/form-assistant-prompts/squad/:setor",
     { schema: getSquadPromptRouteSchema },
@@ -94,30 +134,55 @@ export async function formAssistantPromptsRoutes(fastify: FastifyInstance) {
     },
   );
 
-  // POST /api/form-assistant-prompts — cria prompt para um squad
+  // POST /api/form-assistant-prompts — cria um prompt
   fastify.post<{ Body: CreatePromptBody }>(
     "/api/form-assistant-prompts",
     { schema: createPromptRouteSchema },
     async (request, reply) => {
       try {
-        const { squadSetor, name, template } = request.body;
+        const { squadSetor, name, template, tipo: tipoParam } = request.body;
 
-        if (!squadSetor?.startsWith("SQUAD")) {
+        if (tipoParam && !isValidTipo(tipoParam)) {
           return reply.code(400).send({
             success: false,
-            error: "O campo 'squadSetor' deve começar com 'SQUAD'. Outros setores usam o prompt DEFAULT.",
+            error: `Tipo inválido. Use um dos valores: ${VALID_TIPOS.join(", ")}.`,
           });
         }
 
-        const existing = await promptRepository.findBySquad(squadSetor);
-        if (existing) {
-          return reply.code(409).send({
+        const tipo: PromptType = tipoParam ?? DEFAULT_TIPO;
+
+        if (tipo === "FORM_ASSISTANT") {
+          // Comportamento original: 1 prompt por squad, squadSetor obrigatório.
+          if (!squadSetor?.startsWith("SQUAD")) {
+            return reply.code(400).send({
+              success: false,
+              error:
+                "O campo 'squadSetor' deve começar com 'SQUAD'. Outros setores usam o prompt DEFAULT.",
+            });
+          }
+
+          const existing = await promptRepository.findBySquad(squadSetor, tipo);
+          if (existing) {
+            return reply.code(409).send({
+              success: false,
+              error: `Já existe um prompt cadastrado para o setor '${squadSetor}'. Use PUT para editar.`,
+            });
+          }
+        } else if (squadSetor && !squadSetor.startsWith("SQUAD")) {
+          // Demais tipos (ex.: RELEASE_NOTES): squadSetor é opcional, mas se informado
+          // deve seguir o mesmo padrão. Múltiplos prompts por squad são permitidos.
+          return reply.code(400).send({
             success: false,
-            error: `Já existe um prompt cadastrado para o setor '${squadSetor}'. Use PUT para editar.`,
+            error: "O campo 'squadSetor', quando informado, deve começar com 'SQUAD'.",
           });
         }
 
-        const data = await promptRepository.create({ squadSetor, name, template });
+        const data = await promptRepository.create({
+          squadSetor,
+          tipo,
+          name,
+          template,
+        });
         return reply.code(201).send({ success: true, data });
       } catch (error: any) {
         fastify.log.error(error, "Erro ao criar prompt");

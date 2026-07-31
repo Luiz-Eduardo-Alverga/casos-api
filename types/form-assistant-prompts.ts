@@ -1,11 +1,19 @@
 /**
- * Tipos para gerenciamento de prompts do assistente de IA por Squad.
+ * Tipos para gerenciamento de prompts de IA cadastráveis em banco.
  */
+
+/**
+ * Diferencia o uso do prompt dentro da mesma tabela:
+ * - "FORM_ASSISTANT": abertura de caso. 1 prompt por squad (resolução automática via squadSetor).
+ * - "RELEASE_NOTES": Registro de Liberação. N prompts por squad; o cliente escolhe qual usar via promptId.
+ */
+export type PromptType = "FORM_ASSISTANT" | "RELEASE_NOTES";
 
 export interface FormAssistantPrompt {
   id: string;
   /** null = prompt DEFAULT global; preenchido = exclusivo do squad */
   squadSetor: string | null;
+  tipo: PromptType;
   name: string;
   isActive: boolean;
   /** Parte editável do prompt (regras do Squad). Blocos fixos são montados pelo backend. */
@@ -17,10 +25,15 @@ export interface FormAssistantPrompt {
 }
 
 export interface CreatePromptBody {
-  /** Deve começar com "SQUAD". Não é permitido criar prompt para outros setores. */
-  squadSetor: string;
+  /**
+   * Para tipo "FORM_ASSISTANT": obrigatório e deve começar com "SQUAD" (1 prompt por squad).
+   * Para tipo "RELEASE_NOTES": opcional (permite prompts globais além do DEFAULT); se informado, deve começar com "SQUAD".
+   */
+  squadSetor?: string;
+  /** Default "FORM_ASSISTANT" quando omitido, para manter compatibilidade com clientes atuais. */
+  tipo?: PromptType;
   name: string;
-  /** Regras editáveis do Squad (comportamento, formatos de description por categoria). */
+  /** Regras editáveis do Squad (comportamento, formatos de description por categoria, ou template de Registro de Liberação). */
   template: string;
 }
 
