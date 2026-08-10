@@ -47,9 +47,72 @@ Todas seguem o formato: `{ "success": false, "error": "mensagem" }`.
 ### UX sugerida
 - Um campo/input para o usuário informar o `liberacaoId` (número do registro de liberação do SoftFlow).
 - Opcionalmente, um seletor de "modelo de prompt" (ver seção 2) antes de gerar — se o usuário não escolher nenhum, não envie `promptId` (usa o DEFAULT).
-- Um botão "Gerar Registro de Liberação" que chama o endpoint e mostra loading (a geração pode levar alguns segundos, é uma chamada de IA).
+- Preferir o endpoint SSE abaixo para o loading com etapas reais (não inventar progresso no front).
 - Renderizar `registro_liberacao` como Markdown, com opção de copiar o texto renderizado ou o markdown bruto.
 - Tratar o 404 de "nenhum item encontrado" com uma mensagem amigável tipo "Nenhum caso foi encontrado neste registro de liberação ainda."
+
+### Progresso em tempo real (SSE) — recomendado para a UI de loading
+
+`GET /api/release-notes/:liberacaoId/stream?promptId=...`
+
+Resposta: `text/event-stream` (Server-Sent Events). Mesmos parâmetros do endpoint síncrono.
+
+**Eventos:**
+
+| Evento | Quando | Payload |
+|---|---|---|
+| `progress` | a cada etapa real do backend | `{ step, totalSteps, stepId, percent, title, detail, totalCasos? }` |
+| `delta` | durante `generate_ai`, trechos do Markdown (bufferizados no backend ~120 chars ou ~150 ms) | `{ chunk: string }` — **concatene** no front; não substitua |
+| `done` | sucesso | mesmo JSON de sucesso do GET síncrono (`data.registro_liberacao` = fonte da verdade) |
+| `fail` | falha de negócio | `{ success: false, error, processedIn? }` (não usar o nome `error` — conflita com o evento nativo do EventSource) |
+
+**Etapas reais (`stepId`) — use só estas no fluxo de UI:**
+
+1. `fetch_softflow` — Leitura de tickets e metadados (Softflow)
+2. `extract_tickets` — Extração e organização dos casos
+3. `resolve_prompt` — Resolução do prompt
+4. `generate_ai` — Redação do registro com IA (**stream de tokens** → eventos `delta`)
+5. `finalize` — Formatação e validação
+
+`percent` é aproximado por etapa (0–100), **não** é % real da OpenAI. Na etapa `generate_ai`, além do `progress` com contagem de caracteres, chegam eventos `delta` com o Markdown progressivo — use-os para renderizar o documento enquanto gera. Ao receber `done`, substitua o acumulado por `result.data.registro_liberacao`. Se o usuário cancelar/`es.close()`, o backend aborta a chamada à IA.
+
+Exemplo de consumo no client:
+```ts
+const es = new EventSource(
+  `${API_BASE}/api/release-notes/${liberacaoId}/stream${promptId ? `?promptId=${promptId}` : ""}`,
+);
+
+let markdownDraft = "";
+
+es.addEventListener("progress", (e) => {
+  const p = JSON.parse(e.data);
+  // p.step, p.totalSteps, p.percent, p.title, p.detail, p.totalCasos
+});
+
+es.addEventListener("delta", (e) => {
+  const { chunk } = JSON.parse(e.data) as { chunk: string };
+  markdownDraft += chunk;
+  // renderize markdownDraft progressivamente (react-markdown etc.)
+});
+
+es.addEventListener("done", (e) => {
+  const result = JSON.parse(e.data);
+  // fonte da verdade — pode diferir levemente do draft (trim etc.)
+  markdownDraft = result.data.registro_liberacao;
+  es.close();
+});
+
+es.addEventListener("fail", (e) => {
+  const err = JSON.parse(e.data);
+  // err.error
+  es.close();
+});
+
+es.onerror = () => {
+  // falha de rede / conexão interrompida
+  es.close();
+};
+```
 
 ---
 

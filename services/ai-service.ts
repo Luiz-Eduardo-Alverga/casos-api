@@ -197,6 +197,40 @@ export class AIService {
     });
   }
 
+  /**
+   * Mesmo que generateText, mas com stream: true — chama onChunk a cada delta
+   * de conteúdo e devolve o texto completo ao final.
+   * Aceita AbortSignal para cancelar a chamada se o client desconectar.
+   */
+  async generateTextStream(
+    prompt: string,
+    onChunk: (chunk: string) => void,
+    config?: Partial<GenerationOptions> & { signal?: AbortSignal },
+  ): Promise<string> {
+    const stream = await this.client.chat.completions.create(
+      {
+        model: this.modelName,
+        messages: [{ role: "user", content: prompt }],
+        stream: true,
+        temperature: config?.temperature ?? this.generationConfig.temperature,
+        ...this.buildTokenLimit(
+          config?.maxTokens ?? this.generationConfig.maxTokens,
+        ),
+      },
+      { signal: config?.signal },
+    );
+
+    let full = "";
+    for await (const part of stream) {
+      const delta = part.choices[0]?.delta?.content;
+      if (!delta) continue;
+      full += delta;
+      onChunk(delta);
+    }
+
+    return full.trim();
+  }
+
   private validateContent(content: string): {
     isValid: boolean;
     error?: string;

@@ -67,3 +67,49 @@ export interface ReleaseNotesResponse {
   processedIn?: string;
   error?: string;
 }
+
+/** Total de etapas reais do fluxo (espelha o ReleaseNotesService). */
+export const RELEASE_NOTES_TOTAL_STEPS = 5 as const;
+
+/**
+ * Etapas honestas do pipeline — o front deve usar esses valores,
+ * sem inventar passos intermediários da IA.
+ */
+export type ReleaseNotesProgressStepId =
+  | "fetch_softflow"
+  | "extract_tickets"
+  | "resolve_prompt"
+  | "generate_ai"
+  | "finalize";
+
+export interface ReleaseNotesProgressEvent {
+  step: number;
+  totalSteps: typeof RELEASE_NOTES_TOTAL_STEPS;
+  stepId: ReleaseNotesProgressStepId;
+  /** 0–100, aproximado por etapa (não é % real da OpenAI). */
+  percent: number;
+  title: string;
+  detail: string;
+  totalCasos?: number;
+}
+
+export type ReleaseNotesProgressCallback = (
+  event: ReleaseNotesProgressEvent,
+) => void;
+
+/** Chunk de Markdown emitido durante a etapa generate_ai (SSE `delta`). */
+export interface ReleaseNotesDeltaEvent {
+  /** Trecho incremental — o client deve concatenar. */
+  chunk: string;
+}
+
+export type ReleaseNotesDeltaCallback = (
+  event: ReleaseNotesDeltaEvent,
+) => void;
+
+/** Opções opcionais do fluxo analyze (progresso SSE, streaming da IA, abort). */
+export interface ReleaseNotesAnalyzeOptions {
+  onProgress?: ReleaseNotesProgressCallback;
+  onDelta?: ReleaseNotesDeltaCallback;
+  signal?: AbortSignal;
+}
