@@ -1,0 +1,40 @@
+services:
+  api:
+    image: casos-api:latest
+    build: .
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-3001}
+    networks:
+      - network_public
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:' + (process.env.PORT || 3001) + '/health').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=${TRAEFIK_NETWORK:-network_public}
+        - traefik.http.routers.casos-api.entrypoints=${TRAEFIK_ENTRYPOINT:-web}
+        - traefik.http.routers.casos-api.rule=Host(`${TRAEFIK_HOST:-assistant.hostsoftcom.cloud}`)
+        - traefik.http.routers.casos-api.service=casos-api
+        - traefik.http.services.casos-api.loadbalancer.server.port=${PORT:-3001}
+        - traefik.http.services.casos-api.loadbalancer.responseforwarding.flushinterval=100ms
+
+networks:
+  network_public:
+    external: true

@@ -203,6 +203,6 @@ A IA usa matching inteligente para identificar produtos e usuários mesmo com va
 ## ⚠️ Notas
 
 - Certifique-se de ter uma chave de API válida do iarouter (OpenAI-compatible)
-- A API está configurada para aceitar CORS de todas as origens em desenvolvimento
-- Em produção, ajuste as configurações de CORS conforme necessário
+- CORS em produção: origens em `CORS_ORIGINS` (padrão `https://softflow.hostsoftcom.cloud`)
+- Deploy na VPS Skadi: [docs/deploy-skadi.md](docs/deploy-skadi.md)
 - Os arquivos `products.json` e `users.json` são carregados automaticamente na inicialização do serviço

@@ -14,6 +14,7 @@ import {
   releaseNotesRouteSchema,
   releaseNotesStreamRouteSchema,
 } from "../docs/routes/release-notes.js";
+import { getCorsOrigins } from "../cors-origins.js";
 
 function writeSse(
   reply: FastifyReply,
@@ -131,11 +132,16 @@ export async function releaseNotesRoutes(fastify: FastifyInstance) {
       }
 
       reply.hijack();
+      const requestOrigin = request.headers.origin;
+      const allowedOrigins = getCorsOrigins();
       reply.raw.writeHead(200, {
         "Content-Type": "text/event-stream; charset=utf-8",
         "Cache-Control": "no-cache, no-transform",
         Connection: "keep-alive",
         "X-Accel-Buffering": "no",
+        ...(requestOrigin && allowedOrigins.includes(requestOrigin)
+          ? { "Access-Control-Allow-Origin": requestOrigin }
+          : {}),
       });
 
       const abortController = new AbortController();

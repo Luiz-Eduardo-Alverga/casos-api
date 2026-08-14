@@ -12,6 +12,7 @@ import { reportAnalysisRoutes } from "./routes/report-analysis.js";
 import { productionAnalysisRoutes } from "./routes/production-analysis.js";
 import { formAssistantPromptsRoutes } from "./routes/form-assistant-prompts.js";
 import { releaseNotesRoutes } from "./routes/release-notes.js";
+import { getCorsOrigins } from "./cors-origins.js";
 
 // Carregar variáveis de ambiente
 dotenv.config();
@@ -43,9 +44,11 @@ async function buildServer() {
     },
   });
 
-  // Registrar CORS
+  // Registrar CORS (browser chama NEXT_PUBLIC_ASSISTANT_API_URL direto)
   await fastify.register(cors, {
-    origin: true, // Permitir todas as origens em desenvolvimento
+    origin: getCorsOrigins(),
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   });
 
   // Configurar Swagger
